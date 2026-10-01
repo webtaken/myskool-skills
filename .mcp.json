@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "myskool": {
+      "type": "http",
+      "url": "https://api.myskool.xyz/v1/mcp"
+    }
+  }
+}

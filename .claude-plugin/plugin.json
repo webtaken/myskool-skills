@@ -1,0 +1,20 @@
+{
+  "name": "myskool",
+  "version": "0.1.0",
+  "description": "Retention co-pilot for Skool community creators: urgent-post radar, answer desk, community pulse, churn signals, welcome intros, wins and weekly digest — on top of the MySkool API.",
+  "author": {
+    "name": "MySkool",
+    "url": "https://myskool.xyz"
+  },
+  "homepage": "https://myskool.xyz/docs/skills",
+  "repository": "https://github.com/webtaken/myskool-skills",
+  "license": "MIT",
+  "keywords": [
+    "skool",
+    "community",
+    "churn",
+    "retention",
+    "mcp",
+    "myskool"
+  ]
+}

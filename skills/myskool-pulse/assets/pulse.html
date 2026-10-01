@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Community Pulse</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --base: #c3c2b7; --border: rgba(11,11,11,.10); --chip: #f0efec;
+  --s1: #2a78d6; --prev: #c3c2b7;
+  --pos: #2a78d6; --neu: #c3c2b7; --fru: #ef8f8e; --ang: #c42f2f;
+  --pos-ink: #fff; --neu-ink: #0b0b0b; --fru-ink: #0b0b0b; --ang-ink: #fff;
+  --good: #006300; --bad: #d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --base: #383835; --border: rgba(255,255,255,.10); --chip: #2c2c2a;
+    --s1: #3987e5; --prev: #4a4a46;
+    --pos: #3987e5; --neu: #5a5955; --fru: #a85150; --ang: #e66767;
+    --pos-ink: #fff; --neu-ink: #fff; --fru-ink: #fff; --ang-ink: #0b0b0b;
+    --good: #0ca30c; --bad: #e66767;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --base: #383835; --border: rgba(255,255,255,.10); --chip: #2c2c2a;
+  --s1: #3987e5; --prev: #4a4a46;
+  --pos: #3987e5; --neu: #5a5955; --fru: #a85150; --ang: #e66767;
+  --pos-ink: #fff; --neu-ink: #fff; --fru-ink: #fff; --ang-ink: #0b0b0b;
+  --good: #0ca30c; --bad: #e66767;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 24px; margin: 0; font-weight: 650; }
+h2 { font-size: 15px; margin: 0 0 12px; font-weight: 600; }
+a { color: inherit; text-underline-offset: 2px; }
+.sub { color: var(--ink2); font-size: 13px; margin: 4px 0 20px; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 0; }
+.kpis { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin-bottom: 12px; }
+.kpi .l { color: var(--ink2); font-size: 13px; }
+.kpi .v { font-size: 28px; font-weight: 600; line-height: 1.2; margin: 4px 0; }
+.kpi .d { font-size: 12px; color: var(--muted); }
+.d.good { color: var(--good); } .d.bad { color: var(--bad); }
+.summary p { margin: 0 0 8px; }
+.summary ul { margin: 0 0 8px; padding-left: 18px; }
+.k { color: var(--ink2); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 2px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink2); margin-bottom: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.stack { display: flex; gap: 2px; height: 24px; border-radius: 4px; overflow: hidden; margin: 4px 0 10px; background: var(--surface); }
+.stack > div { min-width: 2px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+.row-l { font-size: 12px; color: var(--ink2); }
+.hbar { display: grid; grid-template-columns: minmax(90px, 40%) 1fr; gap: 8px; align-items: center; margin: 6px 0; font-size: 13px; }
+.hbar .t { display: flex; align-items: center; gap: 6px; }
+.hbar .b { height: 14px; background: var(--s1); border-radius: 0 4px 4px 0; min-width: 2px; }
+.hbar .n { font-size: 12px; color: var(--ink2); white-space: nowrap; }
+ul.list { list-style: none; margin: 0; padding: 0; }
+ul.list li { padding: 8px 0; border-top: 1px solid var(--grid); font-size: 14px; }
+ul.list li:first-child { border-top: 0; }
+.meta { color: var(--muted); font-size: 12px; }
+.chip { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--chip); color: var(--ink2); margin: 2px 4px 0 0; }
+.chip.p0 { background: var(--bad); color: #fff; } .chip.p1 { border: 1px solid var(--bad); color: var(--bad); background: transparent; }
+blockquote { margin: 6px 0 0; padding-left: 10px; border-left: 2px solid var(--base); color: var(--ink2); font-size: 13px; }
+.empty { text-align: center; padding: 64px 16px; color: var(--ink2); }
+.note { color: var(--muted); font-size: 12px; margin-top: 16px; }
+svg text { fill: var(--muted); font-size: 11px; }
+.focusable:focus-visible { outline: 2px solid var(--s1); outline-offset: 1px; }
+#tip { position: fixed; pointer-events: none; z-index: 9; background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.12); max-width: 260px; }
+#tip b { display: block; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-top: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--ink2); font-weight: 600; }
+details summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+.scroll { overflow-x: auto; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div id="tip" role="tooltip" hidden></div>
+<script>
+const DATA = /*DATA*/null;
+
+// <stats> — pure: also run by scripts/pulse-stats.mjs so the text summary uses the same numbers.
+function computeStats(D) {
+  const DAY = 864e5;
+  const recs = (D && D.records) || [];
+  const meta = (D && D.meta) || {};
+  const now = new Date(meta.generatedAt || Date.now());
+  const windowDays = meta.windowDays || 14;
+  const split = meta.weekSplitAt ? new Date(meta.weekSplitAt) : new Date(now - 7 * DAY);
+  const isQ = (r) => r.type === "question" || r.type === "support";
+  const cur = recs.filter((r) => new Date(r.publishedAt) >= split);
+  const prev = recs.filter((r) => new Date(r.publishedAt) < split);
+  const sigCount = (r) => (r.signals || []).length + (r.comments || []).reduce((n, c) => n + (c.signals || []).length, 0);
+  const median = (xs) => {
+    if (!xs.length) return null;
+    const s = [...xs].sort((a, b) => a - b), m = Math.floor(s.length / 2);
+    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  };
+  function week(list) {
+    const members = list.filter((r) => !r.isTeam);
+    const qs = members.filter((r) => isQ(r) && !r.partial && r.answered != null);
+    const unanswered = qs.filter((r) => r.answered === false);
+    return {
+      posts: list.length,
+      comments: list.reduce((n, r) => n + (r.partial ? 0 : r.commentCount || 0), 0),
+      members: new Set(members.map((r) => r.authorId || r.author)).size,
+      questions: qs.length,
+      unanswered: unanswered.length,
+      unansweredPct: qs.length ? unanswered.length / qs.length : null,
+      medianReplyMin: median(qs.map((r) => r.firstTeamReplyMinutes).filter((v) => typeof v === "number")),
+      signals: list.reduce((n, r) => n + sigCount(r), 0),
+      wins: list.filter((r) => r.type === "win").length,
+    };
+  }
+  const tally = (pairs) => Object.entries(pairs).map(([key, v]) => ({ key, ...v })).sort((a, b) => b.count - a.count);
+  const sig = {}, types = {}, sent = { cur: {}, prev: {} };
+  for (const r of recs) {
+    const w = new Date(r.publishedAt) >= split ? "cur" : "prev";
+    const add = (k) => { sig[k] = sig[k] || { count: 0, cur: 0, prev: 0 }; sig[k].count++; sig[k][w]++; };
+    (r.signals || []).forEach(add);
+    (r.comments || []).forEach((c) => (c.signals || []).forEach(add));
+    if (!r.isTeam) {
+      types[r.type] = types[r.type] || { count: 0 }; types[r.type].count++;
+      if (r.sentiment) sent[w][r.sentiment] = (sent[w][r.sentiment] || 0) + 1;
+    }
+  }
+  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - (windowDays - 1) * DAY);
+  const perDay = [];
+  for (let i = 0; i < windowDays; i++) {
+    const d0 = new Date(+start + i * DAY), d1 = new Date(+d0 + DAY);
+    perDay.push({ date: d0.toISOString().slice(0, 10), count: recs.filter((r) => { const t = new Date(r.publishedAt); return t >= d0 && t < d1; }).length, cur: d1 > split });
+  }
+  const RISK = ["cancel_intent", "refund_request", "billing_issue", "access_blocked", "value_doubt", "conflict"];
+  const risky = (s) => (s || []).some((k) => RISK.includes(k));
+  const voices = [];
+  for (const r of recs) {
+    if (r.isTeam) continue;
+    if (risky(r.signals) || r.sentiment === "angry") voices.push({ author: r.author, text: r.title || r.excerpt || "", signals: r.signals || [], url: r.url, urgency: r.urgency, at: r.publishedAt });
+    for (const c of r.comments || []) if (risky(c.signals) || c.sentiment === "angry") voices.push({ author: c.author, text: c.excerpt || "", signals: c.signals || [], url: c.url || r.url, urgency: c.urgency || r.urgency, at: c.publishedAt || r.publishedAt });
+  }
+  const rank = { P0: 0, P1: 1, P2: 2, P3: 3 };
+  const byUrg = (a, b) => (rank[a.urgency] ?? 4) - (rank[b.urgency] ?? 4) || new Date(a.at || a.publishedAt) - new Date(b.at || b.publishedAt);
+  const champs = {};
+  for (const r of recs) for (const h of r.helpers || []) {
+    const k = h.authorId || h.author;
+    champs[k] = champs[k] || { author: h.author, count: 0 }; champs[k].count += h.count || 1;
+  }
+  return {
+    now: now.toISOString(), split: split.toISOString(), windowDays,
+    cur: week(cur), prev: week(prev),
+    signals: tally(sig), types: tally(types), sentiment: sent, perDay,
+    waiting: recs.filter((r) => !r.isTeam && isQ(r) && !r.partial && r.answered === false).sort(byUrg)
+      .map((r) => ({ title: r.title, author: r.author, url: r.url, urgency: r.urgency, hours: Math.round((now - new Date(r.publishedAt)) / 36e5) })),
+    voices: voices.sort(byUrg),
+    wins: recs.filter((r) => r.type === "win").map((r) => ({ title: r.title, author: r.author, url: r.url })),
+    champions: Object.values(champs).sort((a, b) => b.count - a.count).slice(0, 8),
+  };
+}
+// </stats>
+
+(function () {
+  "use strict";
+  const L = {
+    en: { title: "Community pulse", window: "last {n} days", generated: "Generated", vs: "vs previous week", summary: "Summary", risks: "Risks", wins: "Wins", action: "Next action",
+      k_posts: "Posts", k_comments: "Comments", k_members: "Members posting", k_unanswered: "Unanswered questions", k_reply: "Median first team reply", k_signals: "Churn signals", k_wins: "Wins",
+      activity: "Posts per day", thisWeek: "This week", prevWeek: "Previous week", sentiment: "Sentiment of member posts", signals: "Churn signals", types: "What members post",
+      waiting: "Waiting for the team", voices: "Voices at risk", themes: "Top themes", champions: "Champions: members helping members", toTeach: "What to teach next", winsList: "Wins",
+      table: "All analysed posts (table)", none: "Nothing here.", helped: "threads helped", waitingFor: "waiting", mentions: "mentions",
+      empty: "No data yet. Run the myskool-pulse skill to fill this dashboard.", sampled: "Sampled: {a} of {b} posts analysed.", partial: "{n} very large thread(s) were incomplete and left out of reply times.",
+      th: ["Date", "Post", "Type", "Sentiment", "Signals", "Comments", "First reply", "Answered"], yes: "yes", no: "no",
+      pos: "Positive", neu: "Neutral", fru: "Frustrated", ang: "Angry" },
+    es: { title: "Pulso de la comunidad", window: "últimos {n} días", generated: "Generado", vs: "vs semana anterior", summary: "Resumen", risks: "Riesgos", wins: "Logros", action: "Siguiente acción",
+      k_posts: "Posts", k_comments: "Comentarios", k_members: "Miembros que publicaron", k_unanswered: "Preguntas sin respuesta", k_reply: "Mediana 1ª respuesta del equipo", k_signals: "Señales de abandono", k_wins: "Logros",
+      activity: "Posts por día", thisWeek: "Esta semana", prevWeek: "Semana anterior", sentiment: "Sentimiento de los posts", signals: "Señales de abandono", types: "Qué publican los miembros",
+      waiting: "Esperando al equipo", voices: "Voces en riesgo", themes: "Temas principales", champions: "Campeones: miembros que ayudan", toTeach: "Qué enseñar después", winsList: "Logros",
+      table: "Todos los posts analizados (tabla)", none: "Nada por aquí.", helped: "hilos ayudados", waitingFor: "esperando", mentions: "menciones",
+      empty: "Aún no hay datos. Ejecuta la skill myskool-pulse para llenar este panel.", sampled: "Muestra: {a} de {b} posts analizados.", partial: "{n} hilo(s) muy grandes llegaron incompletos y no cuentan en tiempos de respuesta.",
+      th: ["Fecha", "Post", "Tipo", "Sentimiento", "Señales", "Coment.", "1ª respuesta", "Respondida"], yes: "sí", no: "no",
+      pos: "Positivo", neu: "Neutral", fru: "Frustrado", ang: "Enojado" },
+    pt: { title: "Pulso da comunidade", window: "últimos {n} dias", generated: "Gerado", vs: "vs semana anterior", summary: "Resumo", risks: "Riscos", wins: "Conquistas", action: "Próxima ação",
+      k_posts: "Posts", k_comments: "Comentários", k_members: "Membros que postaram", k_unanswered: "Perguntas sem resposta", k_reply: "Mediana 1ª resposta da equipe", k_signals: "Sinais de churn", k_wins: "Conquistas",
+      activity: "Posts por dia", thisWeek: "Esta semana", prevWeek: "Semana anterior", sentiment: "Sentimento dos posts", signals: "Sinais de churn", types: "O que os membros postam",
+      waiting: "Esperando a equipe", voices: "Vozes em risco", themes: "Temas principais", champions: "Campeões: membros que ajudam", toTeach: "O que ensinar a seguir", winsList: "Conquistas",
+      table: "Todos os posts analisados (tabela)", none: "Nada aqui.", helped: "tópicos ajudados", waitingFor: "esperando", mentions: "menções",
+      empty: "Ainda não há dados. Rode a skill myskool-pulse para preencher este painel.", sampled: "Amostra: {a} de {b} posts analisados.", partial: "{n} tópico(s) muito grandes vieram incompletos e não contam nos tempos de resposta.",
+      th: ["Data", "Post", "Tipo", "Sentimento", "Sinais", "Coment.", "1ª resposta", "Respondida"], yes: "sim", no: "não",
+      pos: "Positivo", neu: "Neutro", fru: "Frustrado", ang: "Irritado" },
+  };
+  const SIG = {
+    cancel_intent: ["Cancel intent", "Intención de cancelar", "Intenção de cancelar"], refund_request: ["Refund request", "Pide reembolso", "Pede reembolso"],
+    billing_issue: ["Billing issue", "Problema de pago", "Problema de pagamento"], access_blocked: ["Access blocked", "Acceso bloqueado", "Acesso bloqueado"],
+    tech_blocked: ["Tech blocker", "Bloqueo técnico", "Bloqueio técnico"], value_doubt: ["Doubts the value", "Duda del valor", "Dúvida do valor"],
+    overwhelm: ["Overwhelmed", "Abrumado", "Sobrecarregado"], no_time: ["No time", "Sin tiempo", "Sem tempo"], ignored: ["Ignored", "Sin respuesta", "Ignorado"],
+    conflict: ["Conflict", "Conflicto", "Conflito"], went_quiet: ["Went quiet", "Se apagó", "Sumiu"],
+    question: ["Question", "Pregunta", "Pergunta"], support: ["Support", "Soporte", "Suporte"], win: ["Win", "Logro", "Conquista"], intro: ["Intro", "Presentación", "Apresentação"],
+    feedback: ["Feedback", "Feedback", "Feedback"], discussion: ["Discussion", "Conversación", "Conversa"], announcement: ["Announcement", "Anuncio", "Anúncio"], spam: ["Spam", "Spam", "Spam"],
+  };
+  const app = document.getElementById("app");
+  const tip = document.getElementById("tip");
+  const lang = DATA && L[(DATA.meta || {}).language] ? DATA.meta.language : "en";
+  const t = (k, vars) => String(L[lang][k] ?? L.en[k] ?? k).replace(/\{(\w+)\}/g, (_, v) => (vars || {})[v] ?? "");
+  const lab = (k) => (SIG[k] ? SIG[k][{ en: 0, es: 1, pt: 2 }[lang]] : k);
+  const nf = new Intl.NumberFormat(lang);
+  const pf = new Intl.NumberFormat(lang, { style: "percent", maximumFractionDigits: 0 });
+  document.documentElement.lang = lang;
+
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v; else if (k === "style") el.style.cssText = v; else el.setAttribute(k, v);
+    }
+    for (const c of kids.flat()) if (c != null && c !== false) el.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    return el;
+  }
+  const safeUrl = (u) => (typeof u === "string" && /^https?:\/\//i.test(u) ? u : null);
+  const link = (text, url) => (safeUrl(url) ? h("a", { href: safeUrl(url), target: "_blank", rel: "noopener" }, text) : h("span", null, text));
+  const f1 = new Intl.NumberFormat(lang, { maximumFractionDigits: 1 });
+  const dur = (min) => (min == null ? "—" : min < 90 ? `${Math.round(min)} min` : min < 600 ? `${f1.format(min / 60)} h`
+    : min < 2880 ? `${Math.round(min / 60)} h` : min < 14400 ? `${f1.format(min / 1440)} d` : `${Math.round(min / 1440)} d`);
+  const card = (title, ...kids) => h("section", { class: "card" }, h("h2", null, title), ...kids);
+  const none = () => h("p", { class: "meta" }, t("none"));
+
+  function withTip(el, value, label) {
+    el.classList.add("focusable");
+    el.tabIndex = 0;
+    const show = (e) => {
+      tip.replaceChildren(h("b", null, value), h("span", null, label));
+      tip.hidden = false;
+      const r = el.getBoundingClientRect();
+      const x = e && e.clientX ? e.clientX : r.left + r.width / 2, y = e && e.clientY ? e.clientY : r.top;
+      tip.style.left = Math.min(x + 12, innerWidth - tip.offsetWidth - 8) + "px";
+      tip.style.top = Math.max(8, y - tip.offsetHeight - 10) + "px";
+    };
+    el.addEventListener("pointermove", show); el.addEventListener("focus", () => show());
+    el.addEventListener("pointerleave", () => (tip.hidden = true)); el.addEventListener("blur", () => (tip.hidden = true));
+    return el;
+  }
+
+  if (!DATA) { app.append(h("div", { class: "empty" }, h("h1", null, L.en.title), h("p", null, t("empty")))); return; }
+  const S = computeStats(DATA);
+  const M = DATA.meta || {};
+
+  app.append(h("h1", null, `${t("title")} · ${M.group || ""}`));
+  app.append(h("p", { class: "sub" }, `${t("window", { n: S.windowDays })} · ${t("generated")} ${new Date(S.now).toLocaleString(lang, { dateStyle: "medium", timeStyle: "short" })}`));
+
+  // Summary written by the agent.
+  const sm = DATA.summary;
+  if (sm) {
+    const list = (items) => (items && items.length ? h("ul", null, items.map((x) => h("li", null, x))) : null);
+    app.append(h("div", { class: "grid" }, h("section", { class: "card summary" }, h("h2", null, t("summary")), sm.health ? h("p", null, sm.health) : null,
+      sm.risks && sm.risks.length ? [h("div", { class: "k" }, t("risks")), list(sm.risks)] : null,
+      sm.wins && sm.wins.length ? [h("div", { class: "k" }, t("wins")), list(sm.wins)] : null,
+      sm.action ? [h("div", { class: "k" }, t("action")), h("p", null, sm.action)] : null)));
+  }
+
+  // KPI tiles: this week vs previous week. downGood = lower is better.
+  function kpi(label, cur, prev, fmt, downGood) {
+    let d = h("div", { class: "d" }, "—");
+    if (cur != null && prev != null && S.prev.posts > 0) {
+      const diff = cur - prev;
+      if (diff === 0) d = h("div", { class: "d" }, `= ${t("vs")}`);
+      else {
+        const good = downGood ? diff < 0 : diff > 0;
+        const txt = fmt === pf.format ? `${diff > 0 ? "+" : "−"}${Math.abs(Math.round(diff * 100))} pp` : fmt === dur ? `${diff > 0 ? "+" : "−"}${dur(Math.abs(diff))}` : `${diff > 0 ? "+" : "−"}${nf.format(Math.abs(diff))}`;
+        d = h("div", { class: `d ${good ? "good" : "bad"}` }, `${diff > 0 ? "▲" : "▼"} ${txt} ${t("vs")}`);
+      }
+    }
+    return h("div", { class: "card kpi" }, h("div", { class: "l" }, label), h("div", { class: "v" }, cur == null ? "—" : fmt(cur)), d);
+  }
+  const c = S.cur, p = S.prev, n = (v) => nf.format(v);
+  app.append(h("div", { class: "kpis" },
+    kpi(t("k_posts"), c.posts, p.posts, n, false),
+    kpi(t("k_comments"), c.comments, p.comments, n, false),
+    kpi(t("k_members"), c.members, p.members, n, false),
+    kpi(t("k_unanswered"), c.unansweredPct, p.unansweredPct, pf.format, true),
+    kpi(t("k_reply"), c.medianReplyMin, p.medianReplyMin, dur, true),
+    kpi(t("k_signals"), c.signals, p.signals, n, true),
+    kpi(t("k_wins"), c.wins, p.wins, n, false)));
+
+  // Posts per day — SVG columns, this week in the accent, previous week de-emphasised.
+  const actBox = h("div");
+  const legend2 = h("div", { class: "legend" }, h("span", null, h("i", { style: "background:var(--s1)" }), t("thisWeek")), h("span", null, h("i", { style: "background:var(--prev)" }), t("prevWeek")));
+  function drawActivity() {
+    const W = Math.max(260, actBox.clientWidth || 300), H = 170, ml = 28, mb = 22, mt = 14;
+    const NS = "http://www.w3.org/2000/svg", sv = (tag, a) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
+    const max = Math.max(1, ...S.perDay.map((d) => d.count));
+    const step = [1, 2, 5, 10, 20, 50, 100].find((s) => s * 2 >= max) || Math.ceil(max / 2);
+    const top = step * 2, ih = H - mb - mt, iw = W - ml, band = iw / S.perDay.length, bw = Math.min(24, band * 0.62);
+    const svg = sv("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": t("activity") });
+    for (const v of [0, step, top]) {
+      const y = mt + ih - (v / top) * ih;
+      svg.append(sv("line", { x1: ml, x2: W, y1: y, y2: y, stroke: v ? "var(--grid)" : "var(--base)", "stroke-width": 1 }));
+      const tx = sv("text", { x: ml - 6, y: y + 4, "text-anchor": "end" }); tx.textContent = nf.format(v); svg.append(tx);
+    }
+    let maxI = -1; S.perDay.forEach((d, i) => { if (d.cur && (maxI < 0 || d.count > S.perDay[maxI].count)) maxI = i; });
+    S.perDay.forEach((d, i) => {
+      const x = ml + i * band + (band - bw) / 2, bh = (d.count / top) * ih, y = mt + ih - bh, r = Math.min(4, bh);
+      if (bh > 0) svg.append(sv("path", { d: `M${x},${mt + ih}V${y + r}Q${x},${y} ${x + r},${y}H${x + bw - r}Q${x + bw},${y} ${x + bw},${y + r}V${mt + ih}Z`, fill: d.cur ? "var(--s1)" : "var(--prev)" }));
+      const day = new Date(d.date + "T00:00:00Z");
+      if (i % 2 === (S.perDay.length - 1) % 2) { const tx = sv("text", { x: x + bw / 2, y: H - 6, "text-anchor": "middle" }); tx.textContent = day.getUTCDate(); svg.append(tx); }
+      if (i === maxI && d.count > 0) { const tx = sv("text", { x: x + bw / 2, y: y - 4, "text-anchor": "middle", style: "fill:var(--ink2)" }); tx.textContent = d.count; svg.append(tx); }
+      const hit = sv("rect", { x: ml + i * band, y: mt, width: band, height: ih, fill: "transparent" });
+      withTip(hit, nf.format(d.count), `${day.toLocaleDateString(lang, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" })} · ${d.cur ? t("thisWeek") : t("prevWeek")}`);
+      svg.append(hit);
+    });
+    actBox.replaceChildren(svg);
+  }
+
+  // Sentiment: one 100% stacked bar per week (diverging: blue positive ↔ red negative, gray neutral).
+  const SENT = [["positive", "pos"], ["neutral", "neu"], ["frustrated", "fru"], ["angry", "ang"]];
+  function stackRow(label, counts) {
+    const total = SENT.reduce((n2, [k]) => n2 + (counts[k] || 0), 0);
+    const bar = h("div", { class: "stack" });
+    for (const [k, v] of SENT) {
+      const cnt = counts[k] || 0; if (!cnt) continue;
+      const share = cnt / total;
+      const seg = h("div", { style: `flex:${cnt};background:var(--${v});color:var(--${v}-ink)` }, share >= 0.12 ? pf.format(share) : "");
+      bar.append(withTip(seg, `${nf.format(cnt)} · ${pf.format(share)}`, `${t(v)} · ${label}`));
+    }
+    return [h("div", { class: "row-l" }, `${label} · ${nf.format(total)}`), total ? bar : none()];
+  }
+  const sentCard = card(t("sentiment"), h("div", { class: "legend" }, SENT.map(([, v]) => h("span", null, h("i", { style: `background:var(--${v})` }), t(v)))),
+    stackRow(t("thisWeek"), S.sentiment.cur), stackRow(t("prevWeek"), S.sentiment.prev));
+
+  function hbars(items) {
+    if (!items.length) return none();
+    const max = Math.max(...items.map((x) => x.count));
+    return items.map((x) => withTip(h("div", { class: "hbar" }, h("div", { class: "t" }, lab(x.key)),
+      h("div", { class: "t" }, h("div", { class: "b", style: `width:${(x.count / max) * 82}%` }), h("span", { class: "n" }, nf.format(x.count)))),
+      nf.format(x.count), x.cur != null ? `${lab(x.key)} · ${t("thisWeek")} ${x.cur} · ${t("prevWeek")} ${x.prev}` : lab(x.key)));
+  }
+
+  app.append(h("div", { class: "grid" }, card(t("activity"), legend2, actBox), sentCard));
+  app.append(h("div", { class: "grid" }, card(`${t("signals")} · ${t("window", { n: S.windowDays })}`, hbars(S.signals)), card(t("types"), hbars(S.types))));
+
+  const urg = (u) => (u ? h("span", { class: `chip ${String(u).toLowerCase()}` }, u) : null);
+  const waitList = S.waiting.length ? h("ul", { class: "list" }, S.waiting.slice(0, 12).map((w) => h("li", null, urg(w.urgency), link(w.title || "—", w.url),
+    h("div", { class: "meta" }, `${w.author || ""} · ${t("waitingFor")} ${dur(w.hours * 60)}`)))) : none();
+  const voiceList = S.voices.length ? h("ul", { class: "list" }, S.voices.slice(0, 10).map((v) => h("li", null, urg(v.urgency), link(v.text || "—", v.url),
+    h("div", null, v.signals.map((s) => h("span", { class: "chip" }, lab(s)))), h("div", { class: "meta" }, v.author || "")))) : none();
+  app.append(h("div", { class: "grid" }, card(t("waiting"), waitList), card(t("voices"), voiceList)));
+
+  const themes = (DATA.themes || []).slice(0, 8);
+  const themeList = themes.length ? h("ul", { class: "list" }, themes.map((th) => h("li", null, h("strong", null, th.name), h("span", { class: "meta" }, ` · ${nf.format(th.count || 0)} ${t("mentions")}`),
+    (th.quotes || []).slice(0, 2).map((q) => h("blockquote", null, q))))) : none();
+  const teach = DATA.toTeach || [];
+  const teachList = teach.length ? h("ul", { class: "list" }, teach.map((x) => h("li", null, h("strong", null, x.topic), x.count ? h("span", { class: "meta" }, ` · ${nf.format(x.count)}×`) : null, x.why ? h("div", { class: "meta" }, x.why) : null))) : none();
+  app.append(h("div", { class: "grid" }, card(t("themes"), themeList), card(t("toTeach"), teachList)));
+
+  const champList = S.champions.length ? h("ul", { class: "list" }, S.champions.map((x) => h("li", null, x.author, h("span", { class: "meta" }, ` · ${nf.format(x.count)} ${t("helped")}`)))) : none();
+  const winList = S.wins.length ? h("ul", { class: "list" }, S.wins.slice(0, 10).map((w) => h("li", null, link(w.title || "—", w.url), h("div", { class: "meta" }, w.author || "")))) : none();
+  app.append(h("div", { class: "grid" }, card(t("champions"), champList), card(t("winsList"), winList)));
+
+  // Table view: every value above is reachable without hover.
+  const th = L[lang].th;
+  const rows = [...(DATA.records || [])].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)).map((r) => h("tr", null,
+    h("td", null, new Date(r.publishedAt).toLocaleDateString(lang, { day: "numeric", month: "short" })), h("td", null, link(r.title || "—", r.url)),
+    h("td", null, lab(r.type)), h("td", null, r.sentiment ? t(SENT.find(([k]) => k === r.sentiment)?.[1] || r.sentiment) : ""),
+    h("td", null, [...(r.signals || []), ...(r.comments || []).flatMap((x) => x.signals || [])].map(lab).join(", ")),
+    h("td", null, nf.format(r.commentCount || 0)), h("td", null, dur(r.firstTeamReplyMinutes)),
+    h("td", null, r.answered == null ? "" : r.answered ? t("yes") : t("no"))));
+  app.append(h("section", { class: "card" }, h("details", null, h("summary", null, t("table")),
+    h("div", { class: "scroll" }, h("table", null, h("thead", null, h("tr", null, th.map((x) => h("th", null, x)))), h("tbody", null, rows))))));
+
+  const notes = [];
+  if (M.sampled) notes.push(t("sampled", { a: (DATA.records || []).length, b: M.totalPostsInWindow || "?" }));
+  if (M.partialThreads) notes.push(t("partial", { n: M.partialThreads }));
+  for (const x of M.notes || []) notes.push(x);
+  notes.push("MySkool · myskool.xyz");
+  app.append(h("p", { class: "note" }, notes.join(" · ")));
+
+  drawActivity();
+  if (window.ResizeObserver) { let last = 0; new ResizeObserver(() => { if (actBox.clientWidth !== last) { last = actBox.clientWidth; drawActivity(); } }).observe(actBox); }
+})();
+</script>
+</body>
+</html>

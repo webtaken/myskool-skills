@@ -1,0 +1,21 @@
+{
+  "name": "myskool-skills",
+  "owner": {
+    "name": "MySkool",
+    "url": "https://myskool.xyz"
+  },
+  "metadata": {
+    "description": "Retention co-pilot for Skool community creators: urgent-post radar, answer desk, community pulse, churn signals, welcome intros, wins and weekly digest — on top of the MySkool API.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "myskool",
+      "source": "./",
+      "description": "Retention co-pilot for Skool community creators: urgent-post radar, answer desk, community pulse, churn signals, welcome intros, wins and weekly digest — on top of the MySkool API.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "homepage": "https://myskool.xyz/docs/skills"
+    }
+  ]
+}
