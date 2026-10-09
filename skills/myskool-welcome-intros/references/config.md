@@ -40,16 +40,25 @@ Never store API keys or tokens in it.
   "welcomeDm": false,
   "cancelHowTo": "<exact steps the creator confirmed, e.g. where members cancel in Skool>",
   "saveOffers": ["Pausar la membresía 1 mes", "1:1 de 15 min conmigo"],
+  "billingUpdateHowTo": "<exact steps the creator confirmed to update a card in Skool>",
+  "trialOffer": "<what the creator offers a trial member before it converts, or null>",
+  "winBackOffer": "<what the creator offers a member who left, or null>",
   "events": [{ "title": "Llamada semanal", "when": "jueves 18:00", "timezone": "America/Mexico_City", "link": "https://…" }],
   "programSteps": ["Módulo 0: instala Claude Code", "Módulo 1: tu primer agente"],
-  "thresholds": { "unansweredHours": 6, "ignoredHours": 24, "quietDays": 14 },
+  "thresholds": {
+    "unansweredHours": 6, "ignoredHours": 24, "quietDays": 14,
+    "offlineDays": 21, "trialWarnDays": 3, "activationDays": 30,
+    "winBackDays": 30, "renewalWarnDays": 14, "contactCooldownDays": 14
+  },
+  "dashboard": { "maxActive": 3000 },
   "knowledgeBase": ".myskool/faq.md"
 }
 ```
 
 Every field is optional. Only ask for what the current skill needs.
-`cancelHowTo`, `saveOffers`, `events` and every link must come from the
-creator — never fill them from memory of how Skool works.
+`cancelHowTo`, `saveOffers`, `billingUpdateHowTo`, `trialOffer`,
+`winBackOffer`, `events` and every link must come from the creator — never
+fill them from memory of how Skool works.
 
 ## First run (bootstrap)
 
@@ -75,6 +84,23 @@ Skills may keep small state next to the config:
 - `.myskool/pulse-<YYYY-MM-DD>.html` — rendered pulse dashboards.
 - `.myskool/faq.md` — the community knowledge base (answer desk).
 - `.myskool/testimonials.md` — collected wins/testimonials (wins amplifier).
+- `.myskool/state/contacts.json` — **shared contact log** for every skill that
+  DMs members proactively (churn signals, save desk, activation coach, welcome
+  DMs): `{"<memberId>": {"skill": "save-desk", "lane": "payment_failed",
+  "at": "…"}}`. Read it before drafting; a member contacted less than
+  `thresholds.contactCooldownDays` ago (default 14) gets no new DM — show
+  "contacted 3 d ago by save-desk" instead. Append after each DM is sent.
+- `.myskool/history/members-<YYYY-MM-DD>.json` — daily member counts (daily
+  brief); `.myskool/history/growth-<YYYY-MM-DD>.json` and
+  `.myskool/growth-<YYYY-MM-DD>.html` — growth dashboard totals and pages.
+- `.myskool/private/` — temporary raw member pages from the CLI; delete after
+  use.
+
+State and history files hold member ids, handles and first names only —
+never emails, amounts per person, LTV, join answers or DM text. When you create
+`.myskool/` also write `.myskool/.gitignore` with `state/`, `history/`,
+`private/` and `*.html`, so member data never ends up in a git repo (cloud
+routines clone one).
 
 Without a filesystem, skills fall back to time windows (`since`) and report
 "first run, no history yet" where trends would go.

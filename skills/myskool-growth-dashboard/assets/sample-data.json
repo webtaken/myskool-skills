@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "group": "Club Agentes IA",
+    "groupUrl": "https://www.skool.com/club-agentes-ia",
+    "language": "es",
+    "generatedAt": "2026-10-08T09:00:00Z",
+    "view": "admin",
+    "method": "exact",
+    "windowDays": 90,
+    "counts": {
+      "active": 26,
+      "cancelling": 5,
+      "churned": 57
+    },
+    "coverage": {
+      "activeRead": 26,
+      "cancellingRead": 5,
+      "churnedRead": 9
+    },
+    "partial": [],
+    "notes": [
+      "Datos de ejemplo ficticios"
+    ]
+  },
+  "records": [
+    {"id": "u00", "name": "Lucía R.", "status": "active", "role": "group-admin", "joinedAt": "2025-11-02T15:00:00Z", "lastActiveAt": "2026-10-08T06:36:00Z", "level": 9, "points": 4210, "postCount": 120, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": null, "ltv": null, "source": null, "sourceDetail": null, "referredBy": null},
+    {"id": "u01", "name": "Luis E.", "status": "active", "role": "group-moderator", "joinedAt": "2026-01-15T15:00:00Z", "lastActiveAt": "2026-10-07T21:00:00Z", "level": 7, "points": 1630, "postCount": 48, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 0, "currency": "USD", "interval": null, "tier": null}, "ltv": 0, "source": null, "sourceDetail": null, "referredBy": null},
+    {"id": "u02", "name": "Ana P.", "status": "active", "role": "member", "joinedAt": "2026-03-10T15:00:00Z", "lastActiveAt": "2026-10-07T09:00:00Z", "level": 4, "points": 210, "postCount": 6, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-10T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 343, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u03", "name": "Jorge M.", "status": "active", "role": "member", "joinedAt": "2026-05-20T15:00:00Z", "lastActiveAt": "2026-10-05T09:00:00Z", "level": 3, "points": 88, "postCount": 2, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-20T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 245, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u04", "name": "Sofía L.", "status": "active", "role": "member", "joinedAt": "2026-08-02T15:00:00Z", "lastActiveAt": "2026-10-08T04:12:00Z", "level": 5, "points": 320, "postCount": 9, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-11-02T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 98, "source": "affiliate", "sourceDetail": null, "referredBy": "Carlos M."},
+    {"id": "u05", "name": "Diego R.", "status": "active", "role": "member", "joinedAt": "2026-08-25T15:00:00Z", "lastActiveAt": "2026-09-26T09:00:00Z", "level": 2, "points": 14, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-25T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 98, "source": "external", "sourceDetail": "youtube.com", "referredBy": null},
+    {"id": "u06", "name": "Carla V.", "status": "active", "role": "member", "joinedAt": "2026-09-05T15:00:00Z", "lastActiveAt": "2026-10-06T09:00:00Z", "level": 2, "points": 22, "postCount": 1, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-11-05T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 49, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u07", "name": "Tomás B.", "status": "active", "role": "member", "joinedAt": "2026-09-14T15:00:00Z", "lastActiveAt": "2026-10-07T09:00:00Z", "level": 1, "points": 3, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-14T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 49, "source": "affiliate", "sourceDetail": null, "referredBy": "Carlos M."},
+    {"id": "u08", "name": "Inés F.", "status": "active", "role": "member", "joinedAt": "2026-09-28T15:00:00Z", "lastActiveAt": "2026-10-08T01:48:00Z", "level": 1, "points": 5, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-28T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 49, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u09", "name": "Bruno T.", "status": "active", "role": "member", "joinedAt": "2026-10-03T15:00:00Z", "lastActiveAt": "2026-10-07T23:24:00Z", "level": 1, "points": 0, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-11-03T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 49, "source": "direct", "sourceDetail": null, "referredBy": null},
+    {"id": "u10", "name": "Marta G.", "status": "active", "role": "member", "joinedAt": "2026-04-12T15:00:00Z", "lastActiveAt": "2026-10-03T09:00:00Z", "level": 6, "points": 540, "postCount": 14, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-12T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 45, "currency": "EUR", "interval": "month", "tier": "standard"}, "ltv": 270, "source": "invite", "sourceDetail": null, "referredBy": null},
+    {"id": "u11", "name": "Pablo S.", "status": "active", "role": "member", "joinedAt": "2026-08-18T15:00:00Z", "lastActiveAt": "2026-09-13T09:00:00Z", "level": 1, "points": 2, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-18T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 45, "currency": "EUR", "interval": "month", "tier": "standard"}, "ltv": 90, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u12", "name": "Elena G.", "status": "active", "role": "member", "joinedAt": "2026-09-20T15:00:00Z", "lastActiveAt": "2026-10-07T09:00:00Z", "level": 2, "points": 31, "postCount": 3, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-20T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 45, "currency": "EUR", "interval": "month", "tier": "standard"}, "ltv": 45, "source": "affiliate", "sourceDetail": null, "referredBy": "Marta G."},
+    {"id": "u13", "name": "Andrés K.", "status": "active", "role": "member", "joinedAt": "2026-06-01T15:00:00Z", "lastActiveAt": "2026-10-04T09:00:00Z", "level": 5, "points": 410, "postCount": 7, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-11-01T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 149, "currency": "USD", "interval": "month", "tier": "premium"}, "ltv": 745, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u14", "name": "Valeria C.", "status": "active", "role": "member", "joinedAt": "2026-09-10T15:00:00Z", "lastActiveAt": "2026-10-08T04:12:00Z", "level": 3, "points": 95, "postCount": 4, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-10T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 149, "currency": "USD", "interval": "month", "tier": "premium"}, "ltv": 149, "source": "affiliate", "sourceDetail": null, "referredBy": "Carlos M."},
+    {"id": "u15", "name": "Martín A.", "status": "active", "role": "member", "joinedAt": "2025-10-20T15:00:00Z", "lastActiveAt": "2026-08-29T09:00:00Z", "level": 2, "points": 40, "postCount": 1, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-20T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 470, "currency": "USD", "interval": "year", "tier": "standard"}, "ltv": 470, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u16", "name": "Camila N.", "status": "active", "role": "member", "joinedAt": "2025-10-30T15:00:00Z", "lastActiveAt": "2026-10-06T09:00:00Z", "level": 6, "points": 690, "postCount": 11, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-30T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 470, "currency": "USD", "interval": "year", "tier": "standard"}, "ltv": 470, "source": "external", "sourceDetail": "youtube.com", "referredBy": null},
+    {"id": "u17", "name": "Raúl T.", "status": "active", "role": "member", "joinedAt": "2026-07-15T15:00:00Z", "lastActiveAt": "2026-09-30T09:00:00Z", "level": 3, "points": 70, "postCount": 2, "onTrial": false, "trialEndsAt": null, "renewsAt": "2027-07-15T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 470, "currency": "USD", "interval": "year", "tier": "standard"}, "ltv": 470, "source": "affiliate", "sourceDetail": null, "referredBy": "Marta G."},
+    {"id": "u18", "name": "Lucas H.", "status": "active", "role": "member", "joinedAt": "2025-10-15T15:00:00Z", "lastActiveAt": "2026-09-08T09:00:00Z", "level": 2, "points": 25, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": "2026-10-15T12:00:00Z", "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 430, "currency": "EUR", "interval": "year", "tier": "standard"}, "ltv": 430, "source": "direct", "sourceDetail": null, "referredBy": null},
+    {"id": "u19", "name": "Nora B.", "status": "active", "role": "member", "joinedAt": "2026-09-30T15:00:00Z", "lastActiveAt": "2026-10-05T09:00:00Z", "level": 1, "points": 1, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 0, "currency": "USD", "interval": null, "tier": null}, "ltv": 0, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u20", "name": "Iván Q.", "status": "active", "role": "member", "joinedAt": "2026-07-22T15:00:00Z", "lastActiveAt": "2026-08-09T09:00:00Z", "level": 1, "points": 0, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 0, "currency": "USD", "interval": null, "tier": null}, "ltv": 0, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u21", "name": "Rosa D.", "status": "active", "role": "member", "joinedAt": "2026-08-11T15:00:00Z", "lastActiveAt": "2026-10-02T09:00:00Z", "level": 2, "points": 18, "postCount": 2, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 0, "currency": "USD", "interval": null, "tier": null}, "ltv": 0, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u22", "name": "Hugo P.", "status": "active", "role": "member", "joinedAt": "2026-07-28T15:00:00Z", "lastActiveAt": "2026-09-23T09:00:00Z", "level": 2, "points": 12, "postCount": 1, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 297, "currency": "USD", "interval": null, "tier": "standard"}, "ltv": 297, "source": "external", "sourceDetail": "youtube.com", "referredBy": null},
+    {"id": "u23", "name": "Paula V.", "status": "active", "role": "member", "joinedAt": "2026-10-04T15:00:00Z", "lastActiveAt": "2026-10-07T21:00:00Z", "level": 1, "points": 0, "postCount": 0, "onTrial": true, "trialEndsAt": "2026-10-11T12:00:00Z", "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 0, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u24", "name": "Sergio N.", "status": "active", "role": "member", "joinedAt": "2026-10-06T15:00:00Z", "lastActiveAt": "2026-10-07T09:00:00Z", "level": 1, "points": 2, "postCount": 1, "onTrial": true, "trialEndsAt": "2026-10-20T12:00:00Z", "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 0, "source": "affiliate", "sourceDetail": null, "referredBy": "Carlos M."},
+    {"id": "u25", "name": "Teresa O.", "status": "active", "role": "member", "joinedAt": "2026-02-01T15:00:00Z", "lastActiveAt": "2026-09-29T09:00:00Z", "level": 4, "points": 260, "postCount": 5, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": null, "plan": null, "ltv": null, "source": "invite", "sourceDetail": null, "referredBy": null},
+    {"id": "u26", "name": "Daniel F.", "status": "cancelling", "role": "member", "joinedAt": "2026-06-03T15:00:00Z", "lastActiveAt": "2026-09-28T09:00:00Z", "level": 2, "points": 20, "postCount": 1, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": "2026-10-17T06:00:00Z", "cancelledAt": null, "paymentFailedAt": "2026-10-03T06:00:00Z", "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 196, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u27", "name": "Laura M.", "status": "cancelling", "role": "member", "joinedAt": "2026-08-06T15:00:00Z", "lastActiveAt": "2026-10-04T09:00:00Z", "level": 2, "points": 15, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": "2026-10-20T06:00:00Z", "cancelledAt": null, "paymentFailedAt": "2026-10-06T06:00:00Z", "churnedAt": null, "plan": {"amount": 45, "currency": "EUR", "interval": "month", "tier": "standard"}, "ltv": 90, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u28", "name": "Óscar J.", "status": "cancelling", "role": "member", "joinedAt": "2026-04-14T15:00:00Z", "lastActiveAt": "2026-09-18T09:00:00Z", "level": 3, "points": 60, "postCount": 3, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": "2026-10-14T15:00:00Z", "cancelledAt": "2026-09-29T18:00:00Z", "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 294, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u29", "name": "</script><img src=x onerror=alert(1)>", "status": "cancelling", "role": "member", "joinedAt": "2026-08-27T15:00:00Z", "lastActiveAt": "2026-10-01T09:00:00Z", "level": 2, "points": 33, "postCount": 1, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": "2026-10-27T15:00:00Z", "cancelledAt": "2026-10-01T18:00:00Z", "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 149, "currency": "USD", "interval": "month", "tier": "premium"}, "ltv": 298, "source": "external", "sourceDetail": "youtube.com", "referredBy": null},
+    {"id": "u30", "name": "Gabriel R.", "status": "cancelling", "role": "member", "joinedAt": "2026-01-10T15:00:00Z", "lastActiveAt": "2026-09-05T09:00:00Z", "level": 2, "points": 41, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": "2027-01-10T15:00:00Z", "cancelledAt": "2026-09-20T18:00:00Z", "paymentFailedAt": null, "churnedAt": null, "plan": {"amount": 470, "currency": "USD", "interval": "year", "tier": "standard"}, "ltv": 470, "source": "direct", "sourceDetail": null, "referredBy": null},
+    {"id": "u31", "name": "Felipe A.", "status": "churned", "role": "declined", "joinedAt": "2026-06-02T15:00:00Z", "lastActiveAt": "2026-09-28T09:00:00Z", "level": 2, "points": 10, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-10-02T03:00:00Z", "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 196, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u32", "name": "Natalia C.", "status": "churned", "role": "declined", "joinedAt": "2026-08-25T15:00:00Z", "lastActiveAt": "2026-09-23T09:00:00Z", "level": 1, "points": 1, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-09-25T03:00:00Z", "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 49, "source": "affiliate", "sourceDetail": null, "referredBy": "Carlos M."},
+    {"id": "u33", "name": "Ricardo L.", "status": "churned", "role": "declined", "joinedAt": "2026-03-18T15:00:00Z", "lastActiveAt": "2026-09-13T09:00:00Z", "level": 3, "points": 75, "postCount": 2, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-09-18T03:00:00Z", "plan": {"amount": 45, "currency": "EUR", "interval": "month", "tier": "standard"}, "ltv": 270, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u34", "name": "Silvia T.", "status": "churned", "role": "declined", "joinedAt": "2026-09-23T15:00:00Z", "lastActiveAt": "2026-09-29T09:00:00Z", "level": 1, "points": 0, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-09-30T03:00:00Z", "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 0, "source": "external", "sourceDetail": "instagram.com", "referredBy": null},
+    {"id": "u35", "name": "Joaquín V.", "status": "churned", "role": "declined", "joinedAt": "2026-05-30T15:00:00Z", "lastActiveAt": "2026-08-27T09:00:00Z", "level": 4, "points": 150, "postCount": 4, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-08-30T03:00:00Z", "plan": {"amount": 149, "currency": "USD", "interval": "month", "tier": "premium"}, "ltv": 447, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u36", "name": "Irene M.", "status": "churned", "role": "declined", "joinedAt": "2026-07-14T15:00:00Z", "lastActiveAt": "2026-08-13T09:00:00Z", "level": 1, "points": 2, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-08-14T03:00:00Z", "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 49, "source": "external", "sourceDetail": "youtube.com", "referredBy": null},
+    {"id": "u37", "name": "Mateo G.", "status": "churned", "role": "declined", "joinedAt": "2026-08-20T15:00:00Z", "lastActiveAt": "2026-09-11T09:00:00Z", "level": 1, "points": 1, "postCount": 0, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-09-12T03:00:00Z", "plan": {"amount": 0, "currency": "USD", "interval": null, "tier": null}, "ltv": 0, "source": "skool", "sourceDetail": null, "referredBy": null},
+    {"id": "u38", "name": "Clara P.", "status": "churned", "role": "declined", "joinedAt": "2026-02-25T15:00:00Z", "lastActiveAt": "2026-07-24T09:00:00Z", "level": 2, "points": 30, "postCount": 1, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-07-25T03:00:00Z", "plan": {"amount": 49, "currency": "USD", "interval": "month", "tier": "standard"}, "ltv": 245, "source": "direct", "sourceDetail": null, "referredBy": null},
+    {"id": "u39", "name": "Emilio D.", "status": "churned", "role": "declined", "joinedAt": "2025-09-05T15:00:00Z", "lastActiveAt": "2026-09-03T09:00:00Z", "level": 3, "points": 90, "postCount": 2, "onTrial": false, "trialEndsAt": null, "renewsAt": null, "churnsAt": null, "cancelledAt": null, "paymentFailedAt": null, "churnedAt": "2026-09-05T03:00:00Z", "plan": {"amount": 470, "currency": "USD", "interval": "year", "tier": "standard"}, "ltv": 470, "source": "skool", "sourceDetail": null, "referredBy": null}
+  ],
+
+  "surveyThemes": [
+    {
+      "name": "Conseguir el primer cliente",
+      "count": 5,
+      "quotes": [
+        "quiero cerrar mi primer cliente de agentes este mes",
+        "vender automatizaciones a negocios locales"
+      ]
+    },
+    {
+      "name": "Automatizar su propio negocio",
+      "count": 3,
+      "quotes": [
+        "ahorrar horas de atención por WhatsApp en mi clínica"
+      ]
+    },
+    {
+      "name": "Aprender desde cero",
+      "count": 2,
+      "quotes": [
+        "no sé programar pero quiero entender cómo funcionan los agentes"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-07-08",
+      "active": 21,
+      "mrr": {
+        "EUR": 135,
+        "USD": 640
+      }
+    },
+    {
+      "date": "2026-08-08",
+      "active": 23,
+      "mrr": {
+        "EUR": 150,
+        "USD": 700
+      }
+    },
+    {
+      "date": "2026-09-08",
+      "active": 25,
+      "mrr": {
+        "EUR": 165,
+        "USD": 760
+      }
+    }
+  ],
+  "summary": {
+    "headline": "MRR estimado ≈ 808 USD/mes (+6,2 % vs 8 sep) y ≈ 171 EUR/mes; +4 miembros netos en 30 días (9 altas, 5 bajas).",
+    "risks": [
+      "2 pagos fallidos (49 USD/mes · 45 EUR/mes); el primero pierde acceso el 17 oct",
+      "3 cancelaciones con ≈ 237 USD/mes en juego; Óscar J. sale el 14 oct",
+      "2 de las 3 renovaciones anuales de este mes llevan 3+ semanas sin entrar (Martín A., Lucas H.)"
+    ],
+    "wins": [
+      "Afiliados: 7 altas en 90 días y 6 siguen dentro (86 %)",
+      "La cohorte de septiembre retiene el 86 % (6 de 7)"
+    ],
+    "action": "Ejecuta hoy myskool-save-desk para los 2 pagos fallidos y myskool-churn-signals para Martín A. y Lucas H. antes de sus renovaciones anuales."
+  }
+}

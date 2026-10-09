@@ -61,6 +61,38 @@ Escalate one level when the member is visibly new (intro in the last 30 days,
 | `conflict` | Friction with members or team | arguments, reports, call-outs |
 | `went_quiet` | Was active, then stopped | computed from activity history, not from text — only judge it from a full 4-week scan or saved history, never from a single short window |
 
+## Member-data signals (need `members:read`)
+
+Computed from the member list (`references/members.md`), not from text. Never
+mention them to the member.
+
+| Signal | Meaning |
+|---|---|
+| `offline` | Paying member whose `lastActiveAt` is `thresholds.offlineDays` (21) or more ago |
+| `renewal_soon` | `renewsAt` within `thresholds.renewalWarnDays` (14) |
+| `payment_failed` | `status: "cancelling"` with `paymentFailedAt` |
+| `cancelled` | `status: "cancelling"` with `cancelledAt` (still inside until `churnsAt`) |
+| `trial_ending` | `onTrial` and `trialEndsAt` within `thresholds.trialWarnDays` (3) |
+| `never_started` | Joined 3–30 days ago: no intro, no post or comment, no course progress |
+
+## Lifecycle stage — which skill owns a member
+
+One owner per stage, so two skills never draft for the same person:
+
+| Stage | Rule | Owner |
+|---|---|---|
+| new | joined ≤ 3 days ago | myskool-welcome-intros |
+| onboarding | joined 3–30 days ago, `never_started` | myskool-activation-coach |
+| lurker | joined > 30 days ago, online recently, `postCount` 0/null, level ≤ 2 | myskool-activation-coach |
+| slipping | paying, was active (posted or level ≥ 2), now quiet in the feed and/or `offline` | myskool-churn-signals |
+| trial | `onTrial` | myskool-activation-coach; myskool-save-desk once `trial_ending` |
+| payment_failed / cancelled | `status: "cancelling"` | myskool-save-desk |
+| churned | `status: "churned"` | myskool-save-desk (win-back) |
+| team, admins, moderators, banned | config `team`, `role` admin/moderator/banned | never contacted |
+
+A member who wrote to the creator and is waiting on a reply belongs to
+myskool-inbox-concierge first, whatever their stage.
+
 ## Sentiment (one per item)
 
 `positive` · `neutral` · `frustrated` (annoyed, stuck, disappointed) ·

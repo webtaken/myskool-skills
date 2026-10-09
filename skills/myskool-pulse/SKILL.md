@@ -1,6 +1,6 @@
 ---
 name: myskool-pulse
-description: Builds a sentiment and health dashboard of a Skool community from the last 14 days of posts and comments — activity, unanswered questions, team response time, sentiment mix, churn signals, top themes, champions, wins and what to teach next, this week vs last week — plus a short text summary. Read-only. Use when a Skool creator asks for a community dashboard, sentiment analysis, a health check or weekly report, "how healthy is my Skool", "cómo está mi comunidad", "dashboard de sentimiento de mi comunidad", "qué le preocupa a mis miembros", or community insights and trends. Not for replying to members (use myskool-answer-desk), urgent blockers (use myskool-urgent-radar) or a member-by-member at-risk list (use myskool-churn-signals).
+description: Builds a sentiment and health dashboard of a Skool community from the last 14 days of posts and comments — activity, unanswered questions, team response time, sentiment mix, churn signals, top themes, champions, wins and what to teach next, this week vs last week — plus a short text summary. Read-only. Use when a Skool creator asks for a community dashboard, sentiment analysis, a health check or weekly report, "how healthy is my Skool", "cómo está mi comunidad", "dashboard de sentimiento de mi comunidad", "qué le preocupa a mis miembros", or community insights and trends. Not for replying to members (use myskool-answer-desk), urgent blockers (use myskool-urgent-radar), a member-by-member at-risk list (use myskool-churn-signals) or revenue, MRR and member growth numbers (use myskool-growth-dashboard).
 license: MIT
 compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. Read scopes only.
 ---
@@ -56,8 +56,9 @@ quick look, use `since: "7d"` and a 40-call cap and say so in `meta.notes`.
 The dashboard is `assets/pulse.html` with `DATA` injected: replace the
 placeholder `/*DATA*/null` with the JSON. When Node is available prefer
 `node scripts/pulse-stats.mjs data.json --fill <out.html>` — it escapes member
-text so nothing in a post can break the page. Otherwise escape every `<` in
-the JSON as `<` before injecting it.
+text so nothing in a post can break the page. Otherwise replace every `<` in
+the JSON with the six characters `\u003c` (backslash, u, 0, 0, 3, c)
+before injecting it.
 
 | Host | Deliver |
 |---|---|
@@ -82,7 +83,8 @@ Acción: responder hoy a Raúl con una ruta de 30 días y arreglar el enlace del
 
 - Read-only: never call `create_*`, `delete_*` or `send_dm`. To act on what you
   found, suggest the matching skill: unanswered → myskool-answer-desk,
-  P0/P1 → myskool-urgent-radar, at-risk members → myskool-churn-signals.
+  P0/P1 → myskool-urgent-radar, at-risk members → myskool-churn-signals,
+  revenue and member growth → myskool-growth-dashboard.
 - Every number in the summary comes from the stats (step 6), never from memory
   of the feed. If a metric can't be computed (no previous week, everything
   partial), say "no data" instead of 0.

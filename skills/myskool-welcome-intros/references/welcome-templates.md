@@ -65,6 +65,16 @@ duplicate Skool's Auto-DM, never pitch upsells.
 ES: "Hola {nombre}! Te respondí en tu presentación 🙂 Una cosa más: {próxima llamada en vivo / recurso}. Si te trabas con {primer paso}, escríbeme por aquí."
 EN: "Hi {name}! I replied to your intro 🙂 One more thing: {next live call / resource}. If you get stuck on {first step}, just message me here."
 
+## "No intro yet" DM (needs members:read + DM opt-in)
+
+For members who joined in the window but didn't post an intro. ≤ 60 words, no
+pressure to post publicly, no "I saw you haven't introduced yourself". If
+their join answer states a goal, use it as the hook — without saying where you
+read it.
+
+ES: "Hola {nombre}, ¡bienvenido/a a {comunidad}! Me alegra que estés aquí. Para arrancar, lo único que te recomiendo es {primer paso}. ¿Qué te gustaría lograr en tu primer mes? Así te digo por dónde ir."
+EN: "Hi {name}, welcome to {community}! Glad you're here. To get started, the one thing I'd do is {first step}. What would you like to achieve in your first month? I'll point you the right way."
+
 ## Anti-patterns
 
 - Same opening or structure in two drafts of the same run.

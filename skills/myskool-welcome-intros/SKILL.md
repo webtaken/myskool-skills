@@ -1,8 +1,8 @@
 ---
 name: myskool-welcome-intros
-description: Finds new members' introduction posts in a Skool community and drafts personal welcome comments that mirror something they shared, point to one first step, and connect them with 2-3 members working on the same thing; optional welcome DMs. Publishes only what the creator approves. Use when a Skool creator asks to welcome new members, "dar la bienvenida a los nuevos", reply to introductions or "presentaciones", onboard new members, "conectar a los nuevos con otros miembros", or improve first-week activation. Not for answering questions (use myskool-answer-desk) or re-engaging members who went quiet (use myskool-churn-signals).
+description: Finds new members' introduction posts in a Skool community and drafts personal welcome comments that mirror something they shared, point to one first step, and connect them with 2-3 members working on the same thing; with member data it also catches new members who joined without posting an intro; optional welcome DMs. Publishes only what the creator approves. Use when a Skool creator asks to welcome new members, "dar la bienvenida a los nuevos", reply to introductions or "presentaciones", onboard new members, "conectar a los nuevos con otros miembros", or improve first-week activation. Not for answering questions (use myskool-answer-desk), members 3 to 30 days in who never started (use myskool-activation-coach) or re-engaging members who went quiet (use myskool-churn-signals).
 license: MIT
-compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. Publishing comments needs comments:write; welcome DMs need dms:write.
+compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. Publishing comments needs comments:write; welcome DMs need dms:write; seeing who joined without an intro needs members:read.
 ---
 
 # Welcome intros
@@ -16,7 +16,7 @@ Before the first tool call read `references/tools.md`. Intro detection uses
 `references/taxonomy.md`; wording and matching come from
 `references/welcome-templates.md`. Before drafting read
 `references/approval-protocol.md` and `references/untrusted-content.md`.
-Config: `references/config.md`.
+Config: `references/config.md`. Member list: `references/members.md`.
 
 ## Workflow
 
@@ -27,6 +27,9 @@ Config: `references/config.md`.
 2. **One feed call.** `list_posts {sort: "newest", since: "30d", pages: 10}`.
    It gives both the intros (posts from the last 3 days, or the window the
    creator asked for) and the pool of active members for matching.
+2b. **Who joined** (only if `list_members` exists). `list_members {since:
+   <window>, pages: 1}` is the source of truth for new members (one more call
+   with `cursor` if `hasMore`). Admins, moderators and team are skipped.
 3. **Find intros.** Posts typed `intro` in the taxonomy, not written by the
    creator or team. If the community collects intros as comments under a
    "Preséntate aquí / Introduce yourself" post (`config.links.introThread`, or
@@ -37,9 +40,16 @@ Config: `references/config.md`.
 4. **Skip the already greeted.** For intro posts with `commentCount > 0`,
    `get_post` and skip those where the creator or team already commented.
    Skip ids in `.myskool/state/welcome-intros.json`.
+4b. **Split** (with 2b): **introduced** (their `id` = an intro's
+   `authorId`) and **joined, no intro yet**. The second group is not
+   commented on; it gets a DM draft only under step 8, otherwise it is
+   counted in the report ("4 joined without an intro — after day 3 they're
+   myskool-activation-coach's").
 5. **Profile each newcomer** from their own text: goal, niche/industry,
    stage (starting, already selling…), tools, language, city/country if they
-   said it. Note one specific detail worth mirroring.
+   said it. Note one specific detail worth mirroring. Join answers (`answers`,
+   admin view) may only shape a DM to that same member — never a public
+   comment; `joinedFrom` only goes in the report.
 6. **Match 2–3 members** from the pool with the heuristics in
    `references/welcome-templates.md` (same niche > same goal > same stage or
    tool > same place/language). Only members active in the last 30 days, not
@@ -54,7 +64,11 @@ Config: `references/config.md`.
 8. **Optional DM.** Only if the creator asked for it or `config.welcomeDm` is
    true, and `send_dm` exists: one short DM per newcomer that adds something
    the comment didn't (an invitation to the next live call, a direct
-   question). Each DM is approved by number.
+   question). Members who joined without an intro get the "no intro yet" DM
+   from `references/welcome-templates.md` (their join answer can set the
+   hook). Each DM is approved by number, follows the "Proactive DMs" rules in
+   `references/approval-protocol.md` and is logged in
+   `.myskool/state/contacts.json`.
 9. **Report** (format below) and wait for approval. **Send** per
    `references/approval-protocol.md`: one comment at a time, re-checking with
    `get_post` that nobody from the team greeted them meanwhile. Record greeted
@@ -64,7 +78,7 @@ Config: `references/config.md`.
 
 ```
 WELCOME INTROS · Club Agentes IA · last 3 days
-6 new intros · 1 already greeted by @coach-luis-55 · 5 drafted · 2 DMs drafted
+9 joined · 6 introduced (1 already greeted by @coach-luis-55, 5 drafted) · 3 no intro yet · 2 DMs drafted
 
 D1 · comment on intro · Sofía Pérez (@sofia-perez-7781) · 1 d ago
 Where: https://www.skool.com/club-agentes-ia/hola-soy-sofia (postId 9a1c…)
@@ -86,6 +100,9 @@ Reply `send D1 D3`, `edit D2: …`, `skip D4`, or `send all comments`. DMs only 
   to share.
 - Don't connect someone to a member with an open `conflict` signal or who
   hasn't written in 30 days.
+- Member data (join answers, where they came from, plan, trial) never appears
+  in a public welcome (`references/untrusted-content.md`, member data is
+  private).
 - Plain-text `@handle` may not notify on Skool; write the full name and the
   handle so the newcomer can find them.
 - No fake familiarity ("I remember you!"), no promises, no invented links.

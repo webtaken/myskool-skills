@@ -1,8 +1,8 @@
 ---
 name: myskool-urgent-radar
-description: Scans a Skool community's newest posts, fresh comments and unanswered DMs for urgent problems — members who can't access or download what they paid for, can't install a required tool, billing errors, refund or cancellation intent, harassment, or the same blocker reported by several members — and returns a short ranked alert with reply drafts the creator approves before anything is sent. Built to run hourly. Use when a Skool creator asks for urgent posts, "qué es urgente en mi comunidad", "hay alguien bloqueado", "who can't access the course", "alguien quiere cancelar", "check for fires", or wants an hourly alert on WhatsApp/Telegram. Not for the full backlog of normal questions (use myskool-answer-desk), DM triage of every conversation (use myskool-inbox-concierge), or weekly sentiment reports (use myskool-pulse).
+description: Scans a Skool community's newest posts, fresh comments and unanswered DMs for urgent problems — members who can't access or download what they paid for, can't install a required tool, billing errors, refund or cancellation intent, harassment, or the same blocker reported by several members — and returns a short ranked alert with reply drafts the creator approves before anything is sent. Built to run hourly. Use when a Skool creator asks for urgent posts, "qué es urgente en mi comunidad", "hay alguien bloqueado", "who can't access the course", "alguien quiere cancelar", "check for fires", or wants an hourly alert on WhatsApp/Telegram. Not for the full backlog of normal questions (use myskool-answer-desk), DM triage of every conversation (use myskool-inbox-concierge), weekly sentiment reports (use myskool-pulse) or working the list of cancellations and failed payments (use myskool-save-desk).
 license: MIT
-compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. DM checks need the dms:read scope; sending replies needs comments:write / dms:write.
+compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. DM checks need the dms:read scope; sending replies needs comments:write / dms:write; a systemic announcement post needs posts:write; the billing check needs members:read and a Skool admin account.
 ---
 
 # Urgent radar
@@ -41,6 +41,17 @@ Config and memory: `references/config.md`. Reply templates and what to check:
    `lastMessage` of each; `get_dm` only for conversations whose last message
    looks urgent (at most 10 calls). No DM tools → skip silently on scheduled
    runs; on demand, mention once how to enable them (`references/tools.md`).
+4b. **Billing check** (only if `list_members` exists; admin view; one call).
+   `list_members {status: "cancelling", since: <window>, pages: 1}`:
+   - 3 or more `paymentFailedAt` in the window → **P0 SYSTEMIC billing**
+     ("3 payments failed in 2 h — check Skool's billing / Stripe status"), no
+     member drafts; owner: creator.
+   - A new cancellation that is annual, `premium`/`vip`, or `ltv` ≥ 2× the
+     median `ltv` of that page → **P1**, owner: creator, "→ myskool-save-desk".
+     No draft here; the save desk writes it.
+   `admin_required` or no tool → skip silently (scheduled) or mention once (on
+   demand). Amounts stay out of scheduled deliveries
+   (`references/untrusted-content.md`).
 5. **Classify** every member item with urgency, churn signals and sentiment
    (`references/taxonomy.md`). Keep **P0 and P1 only**. An item is `ignored`
    (and at least P1) if it's a question/support item with no team reply after

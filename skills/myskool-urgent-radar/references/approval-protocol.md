@@ -56,6 +56,29 @@ Only after an explicit approval in this conversation (`send D1`, "sí, mándalo"
 (Wins Wall, digest, prompts) — but never DMs. DMs always need their numbers. Drafts older than 24 h are stale: re-run the skill instead of
 sending them.
 
+## Proactive DMs (member lists)
+
+Skills that DM members who didn't write first (churn signals, save desk,
+activation coach, welcome DMs) follow extra rules — a member list is for the
+creator to pick from, not a mailing list:
+
+- At most **10 DM drafts per run**, each written for that one person. Never the
+  same text twice.
+- Skip anyone contacted less than `thresholds.contactCooldownDays` ago in
+  `.myskool/state/contacts.json`. Without a filesystem: a conversation in
+  `list_dms` whose last message is the creator's and newer than the cooldown
+  counts as contacted.
+- The draft header says the lane and the reason (`D3 · DM · payment_failed ·
+  access ends in 2 d`) — that header is for the creator only and never goes into
+  the message.
+- Right before sending, re-check the member with `get_member {id, courses:
+  false}`: if their status changed (payment fixed, back to active, already
+  gone), skip it and say so.
+- `send_dm` `not_found`, or `forbidden` with "refused to open a chat" → mark
+  them unreachable and, where the skill has one, offer the email draft for the
+  creator to send from their own tools.
+- After each send, append the member to `contacts.json`.
+
 ## Missing write or DM tools
 
 If the creator approves a draft but the tool for it isn't available (no write

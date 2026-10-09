@@ -46,6 +46,13 @@ EN: {name}, your question about {topic} slipped through — sorry about that. {s
 ES: Hola {nombre}! Me acordé de tu post sobre {su último tema}. ¿Cómo vas con eso? Si te ayuda, {primer paso o próxima llamada en vivo de config}.
 EN: Hey {name}! Your post about {their last topic} came to mind. How's that going? If useful, {next step or next live call}.
 
+### offline / renewal_soon (silent payer, no text evidence)
+They never said anything; don't pretend they did, and never mention logins,
+renewal or price. Reach out with something useful for what they came for
+(join answer via `get_member`, their last post, or the next live call).
+ES: Hola {nombre}! Me acordé de ti porque {algo real: esta semana hablamos de {tema de su objetivo} / el jueves hay llamada en vivo}. ¿Cómo vas con {su objetivo}? Si te sirve, te digo por dónde seguir.
+EN: Hi {name}! You came to mind because {something real: this week we covered {topic of their goal} / there's a live call on Thursday}. How's {their goal} going? Happy to point you to the next step.
+
 ### refund_request / billing_issue / conflict → NEEDS CREATOR
 Draft only a holding message and ask the creator what to do:
 ES: Hola {nombre}, vi tu mensaje. Lo reviso personalmente y te escribo hoy.

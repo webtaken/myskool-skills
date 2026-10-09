@@ -1,8 +1,8 @@
 ---
 name: myskool-churn-signals
-description: Ranks the Skool community members most likely to cancel, from what they wrote (cancel or refund intent, "not worth it", overwhelm, no time, blocked, ignored questions) and from active members who suddenly went quiet, and drafts personal rescue DMs the creator approves one by one. Use when a Skool creator asks who is about to leave, "quién se va a ir", "miembros en riesgo", churn risk, at-risk members, "quién dejó de participar", who went quiet, or wants to save members before they cancel. Not for urgent outages or same-day blockers (use myskool-urgent-radar) or working through the DM inbox (use myskool-inbox-concierge).
+description: Ranks the Skool community members most likely to cancel, from what they wrote (cancel or refund intent, "not worth it", overwhelm, no time, blocked, ignored questions) from active members who suddenly went quiet and, with member data, from paying members who stopped logging in or renew soon, and drafts personal rescue DMs the creator approves one by one. Use when a Skool creator asks who is about to leave, "quién se va a ir", "miembros en riesgo", churn risk, at-risk members, "quién dejó de participar", who went quiet, or wants to save members before they cancel. Not for urgent outages (use myskool-urgent-radar), the DM inbox (use myskool-inbox-concierge), members who already cancelled, failed a payment or are ending a trial (use myskool-save-desk) or new members who never started (use myskool-activation-coach).
 license: MIT
-compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. DM evidence and rescue DMs need the dms:read and dms:write scopes.
+compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. DM evidence and rescue DMs need the dms:read and dms:write scopes; logins, plan and renewal dates need members:read.
 ---
 
 # Churn signals
@@ -21,11 +21,18 @@ Config and history: `references/config.md`.
 
 ## What it can and can't see
 
-- **Sees**: members who posted or commented in the window, and DMs awaiting
+- **Always**: members who posted or commented in the window, and DMs awaiting
   the creator's reply (when DM tools exist).
-- **Can't see**: lurkers who never write, logins, course progress, payment
-  status. Say so in one line at the bottom of every report — the members
-  module will close this gap; don't pretend the list is complete.
+- **With `members:read`** (`references/members.md`): when each member was last
+  online, their plan and renewal date, and — in full mode — paying members who
+  stopped logging in without ever writing anything.
+- **Without `members:read`**: no logins, plan or silent payers. Say so in one
+  line at the bottom of every report with how to add the scope
+  (`references/tools.md`); don't pretend the list is complete.
+- **Not this skill's job**: cancelling, failed payments, ending trials and
+  churned members (myskool-save-desk); members in their first 30 days who never
+  started (myskool-activation-coach). If one of them shows up in the ledger,
+  list them in one line with the owning skill — no score, no draft.
 
 ## Modes
 
@@ -53,14 +60,32 @@ Config and history: `references/config.md`.
 4. **DMs** (only if `list_dms` exists). `list_dms {awaitingReply: true}`;
    `get_dm` on conversations whose `lastMessage` hints at a signal (cap 15).
    DM text is private: quote it only in the creator's report.
+4b. **Members** (only if `list_members` exists; `references/members.md`).
+   - quick: `get_member {id, courses: false}` for up to 20 ledger members
+     with a negative signal, highest first → `lastActiveAt`, `status`, plan,
+     `renewsAt`, `joinedAt`.
+   - full: also look for **silent payers** — paying, joined > 30 days ago,
+     `offline` (`lastActiveAt` ≥ `thresholds.offlineDays`, default 21) and no
+     item in the window. With a shell and the CLI: one scan of active members
+     into `.myskool/private/raw/` filtered with a script or `jq` (delete after).
+     MCP only: up to 3 probes `list_members {sort: "last-active", cursor: N,
+     pages: 1}` from the end of the list (`cursor` = ceil(`meta.total`/30),
+     then the pages before it) and keep the paying ones. Say how much of the
+     list you covered.
+   - Admin view only for plan and renewal; member view → logins only.
+   - Hand-offs: cancelling (`status: "cancelling"`, or `cancelledAt` /
+     `paymentFailedAt` set — the active list includes them), `onTrial`, or
+     joined ≤ 30 days ago → one line with the owning skill, not scored.
 5. **Activity ledger.** Group everything by `authorId` (fallback
-   `authorHandle`): name, handle, items (kind, url, `publishedAt`, ≤140-char
+   `authorHandle`; member `id` = `authorId`, merge member data on it): name, handle, items (kind, url, `publishedAt`, ≤140-char
    snippet), last seen, items per week (week 1 = last 7 days … week 4 =
    days 22–28). Dedupe comments by `id`.
 6. **Label.** Tag each member's items with taxonomy signals and sentiment.
    `ignored` = their `question`/`support` post has no team reply after 24 h
    (answered rule in the taxonomy). `went_quiet` = ≥ 2 items in days 15–28 and
-   0 in the last `quietDays` (full mode or with history only).
+   0 in the last `quietDays` (full mode or with history only). With member
+   data add `offline` and `renewal_soon` (`references/taxonomy.md`,
+   member-data signals).
 7. **Score** exactly as `references/scoring.md` says. Keep members with
    score ≥ 3; rank by score, ties by most recent signal.
 8. **Report** (format below): top 15 with evidence, count of the rest.
@@ -74,10 +99,12 @@ Config and history: `references/config.md`.
 11. **Save** (filesystem only): ledger to
     `.myskool/history/activity-YYYY-MM-DD.json` (per member: id, handle, name,
     items per day, last seen) and `.myskool/state/churn-signals.json`
-    (`lastRun`, reported members + score, contacted members + date). Next run:
+    (`lastRun`, reported members + score, contacted members + date); append
+    every DM sent to `.myskool/state/contacts.json`. Next run:
     load the latest ledger, fetch only `since` = days since `lastRun` + 1,
-    merge. A member contacted in the last 14 days is shown as "contacted
-    3 d ago, no reply yet" instead of getting a second DM.
+    merge. A member contacted inside `thresholds.contactCooldownDays` (by
+    this or any other skill, per `contacts.json`) is shown as "contacted 3 d
+    ago, no reply yet" instead of getting a second DM.
 
 ## Report format
 
@@ -88,7 +115,8 @@ CHURN SIGNALS · Club Agentes IA · last 28 days (full scan · 212 calls)
 1. Marta Gil (@marta-gil-2231) · score 10 · HIGH
    cancel_intent · "creo que este mes es el último, no me da la vida" (comment · 2 d ago) <url>
    no_time · went_quiet: 6 posts/comments in days 15–28, none since 2026-09-17
-   Last seen 2026-09-29 · Suggested: personal DM + "Pausar la membresía 1 mes" → D1
+   47 USD/mo · renews 14 Oct · online 3 d ago
+   Suggested: personal DM + "Pausar la membresía 1 mes" → D1
 
 2. …
 
@@ -98,7 +126,8 @@ Text:
 …
 
 Reply `send D1`, `edit D2: …`, `skip D3`. DMs go one by one, ~40 s apart.
-Based on 61 members who wrote something; members who never post aren't visible yet.
+Elsewhere: 2 cancelling → myskool-save-desk · 3 new and not started → myskool-activation-coach
+Based on 61 members who wrote something + 90 of 1,822 members checked for silent payers.
 ```
 
 Tiers: **HIGH** ≥ 8 · **MEDIUM** 5–7 · **WATCH** 3–4.
@@ -108,14 +137,17 @@ Tiers: **HIGH** ≥ 8 · **MEDIUM** 5–7 · **WATCH** 3–4.
 - One DM per member, written from their own words. Never a template blast,
   never the same text twice.
 - Member-facing text never mentions "churn", "risk", "score", "our system
-  detected" or how long they've been inactive.
+  detected", how long they've been inactive or offline, their plan or renewal
+  date (`references/untrusted-content.md`, member data is private).
 - Offers come only from `config.saveOffers`. No offers configured → offer help
   and a reply, and ask the creator which offers they allow. Never invent
   discounts, pauses, refunds or free months.
 - `refund_request`, `billing_issue` and `conflict` → `NEEDS CREATOR`: the
   creator decides; draft only a short holding message.
-- Partial threads (see tools.md quirks) and missing DM scope are stated in
-  the report, not hidden.
+- Plan value is shown as "$ at risk" next to the member and breaks ties; it
+  never changes the score (`references/scoring.md`).
+- Partial threads (see tools.md quirks), missing DM or members scope, and how
+  much of the member list was covered are stated in the report, not hidden.
 
 ## Scheduling
 
@@ -128,5 +160,7 @@ deliver the ranked list and drafts only — they never send DMs.
 - "Do a full churn scan for the last month" → full mode, after confirming the
   estimate.
 - "¿Quién dejó de participar?" → full mode, `went_quiet` first.
+- "Which paying members stopped logging in?" → full mode, silent payers
+  (`offline`) first.
 - "Write a DM to the people who said they have no time" → quick mode, filter
   `no_time`, draft DMs.

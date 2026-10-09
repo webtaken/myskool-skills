@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Growth Dashboard</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --base: #c3c2b7; --border: rgba(11,11,11,.10); --chip: #f0efec;
+  --s1: #2a78d6; --s2: #eb6834; --warn: #fab219;
+  --good: #006300; --bad: #d03b3b; --bad-ink: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --base: #383835; --border: rgba(255,255,255,.10); --chip: #2c2c2a;
+    --s1: #3987e5; --s2: #d95926; --warn: #fab219;
+    --good: #0ca30c; --bad: #e66767; --bad-ink: #0b0b0b;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --base: #383835; --border: rgba(255,255,255,.10); --chip: #2c2c2a;
+  --s1: #3987e5; --s2: #d95926; --warn: #fab219;
+  --good: #0ca30c; --bad: #e66767; --bad-ink: #0b0b0b;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 24px; margin: 0; font-weight: 650; overflow-wrap: anywhere; }
+h2 { font-size: 15px; margin: 0 0 12px; font-weight: 600; }
+a { color: inherit; text-underline-offset: 2px; }
+.sub { color: var(--ink2); font-size: 13px; margin: 6px 0 4px; }
+.private { color: var(--muted); font-size: 12px; margin: 0 0 16px; }
+.badge { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--chip); color: var(--ink2); margin-right: 6px; }
+.banner { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--warn); border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; color: var(--ink2); }
+.banner p { margin: 2px 0; }
+.banner b { color: var(--ink); }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 0; }
+.kpis { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 12px; }
+.kpi .l { color: var(--ink2); font-size: 13px; }
+.kpi .v { font-size: 26px; font-weight: 600; line-height: 1.2; margin: 4px 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.kpi .v small { font-size: 13px; font-weight: 500; color: var(--ink2); }
+.kpi .v.nd { font-size: 15px; font-weight: 500; color: var(--muted); }
+.kpi .d { font-size: 12px; color: var(--muted); }
+.d.good { color: var(--good); } .d.bad { color: var(--bad); }
+.summary p { margin: 0 0 8px; }
+.summary ul { margin: 0 0 8px; padding-left: 18px; }
+.k { color: var(--ink2); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 4px; }
+.summary .k:first-of-type { margin-top: 4px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink2); margin-bottom: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.hbar { display: grid; grid-template-columns: minmax(90px, 40%) 1fr; gap: 8px; align-items: center; margin: 6px 0; font-size: 13px; }
+.hbar .t { display: flex; align-items: center; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.hbar .b { height: 14px; background: var(--s1); border-radius: 0 4px 4px 0; min-width: 2px; }
+.hbar .n { font-size: 12px; color: var(--ink2); white-space: nowrap; }
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 8px; }
+.stat .l { color: var(--ink2); font-size: 12px; }
+.stat .n { font-size: 22px; font-weight: 600; line-height: 1.25; font-variant-numeric: tabular-nums; }
+ul.list { list-style: none; margin: 0; padding: 0; }
+ul.list li { padding: 8px 0; border-top: 1px solid var(--grid); font-size: 14px; overflow-wrap: anywhere; }
+ul.list li:first-child { border-top: 0; }
+.meta { color: var(--muted); font-size: 12px; }
+.chip { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--chip); color: var(--ink2); margin: 2px 4px 0 0; }
+.chip.bad { background: var(--bad); color: var(--bad-ink); }
+.chip.warn { border: 1px solid var(--bad); color: var(--bad); background: transparent; }
+blockquote { margin: 6px 0 0; padding-left: 10px; border-left: 2px solid var(--base); color: var(--ink2); font-size: 13px; overflow-wrap: anywhere; }
+.empty { text-align: center; padding: 64px 16px; color: var(--ink2); }
+.note { color: var(--muted); font-size: 12px; margin-top: 16px; }
+.chart { min-height: 40px; }
+svg { display: block; max-width: 100%; }
+svg text { fill: var(--muted); font-size: 11px; }
+.focusable:focus-visible { outline: 2px solid var(--s1); outline-offset: 1px; }
+#tip { position: fixed; pointer-events: none; z-index: 9; background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.12); max-width: 260px; }
+#tip b { display: block; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-top: 1px solid var(--grid); vertical-align: top; overflow-wrap: anywhere; }
+th { color: var(--ink2); font-weight: 600; }
+td.r, th.r { text-align: right; }
+.cellbar { height: 6px; background: var(--s1); border-radius: 0 3px 3px 0; margin-top: 4px; min-width: 2px; }
+details summary { cursor: pointer; font-weight: 600; font-size: 13px; margin-top: 8px; }
+.scroll { overflow-x: auto; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div id="tip" role="tooltip" hidden></div>
+<script>
+const DATA = /*DATA*/null;
+
+// <stats> — pure: also run by scripts/growth-stats.mjs so the text summary and the page use the same numbers.
+function shortName(first, last, full) {
+  const clean = (s) => (typeof s === "string" ? s.trim().replace(/\s+/g, " ") : "");
+  let f = clean(first), l = clean(last);
+  if (!f) {
+    const parts = clean(full).split(" ").filter(Boolean);
+    f = parts[0] || "";
+    if (!l && parts.length > 1) l = parts[parts.length - 1];
+  }
+  if (!f) return null;
+  const ini = l ? Array.from(l)[0].toUpperCase() + "." : "";
+  return Array.from(f).slice(0, 24).join("") + (ini ? " " + ini : "");
+}
+
+// One member as list_members / `myskool members list --json` returns it → one DATA record.
+// Keeps no email, handle, answers, bio, avatar, location or links; names become "Ana P.".
+// Skool's active tab also lists members who are cancelling (still inside) with status
+// "active": a cancel or failed-payment date makes them "cancelling".
+function toRecord(m) {
+  const v = (x) => (x === undefined ? null : x);
+  const p = m.plan, from = m.joinedFrom || {}, ref = m.referredBy;
+  const st = m.status || "active";
+  return {
+    id: m.id, name: shortName(m.firstName, m.lastName, m.name) || "—",
+    status: st === "active" && (m.cancelledAt || m.paymentFailedAt) ? "cancelling" : st, role: v(m.role),
+    joinedAt: v(m.joinedAt), lastActiveAt: v(m.lastActiveAt),
+    level: v(m.level), points: v(m.points), postCount: v(m.postCount),
+    onTrial: !!m.onTrial, trialEndsAt: v(m.trialEndsAt), renewsAt: v(m.renewsAt), churnsAt: v(m.churnsAt),
+    cancelledAt: v(m.cancelledAt), paymentFailedAt: v(m.paymentFailedAt), churnedAt: v(m.churnedAt),
+    plan: p ? { amount: v(p.amount), currency: v(p.currency), interval: v(p.interval), tier: v(p.tier) } : null,
+    ltv: v(m.ltv), source: v(from.source), sourceDetail: v(from.detail),
+    referredBy: ref && ref.name ? shortName(null, null, ref.name) : null,
+  };
+}
+
+function computeStats(D) {
+  const DAY = 864e5;
+  const meta = (D && D.meta) || {};
+  const seen = new Set();
+  const recs = ((D && D.records) || []).filter((r) => r && r.id != null && !seen.has(r.id) && seen.add(r.id));
+  const now = Date.parse(meta.generatedAt) || Date.now();
+  const T = (x) => (x ? Date.parse(x) : NaN);
+  const iso = (ms) => new Date(ms).toISOString();
+  const windowed = meta.method === "windowed";
+  const admin = meta.view !== "member";
+  const windowDays = meta.windowDays || (windowed ? 30 : 90);
+  const C = meta.counts || {};
+  const partial = Array.isArray(meta.partial) ? meta.partial : [];
+  const r2 = (x) => Math.round(x * 100) / 100;
+  const r3 = (x) => Math.round(x * 1000) / 1000;
+  const team = (r) => /admin|moderator|owner/i.test(r.role || "");
+  const inside = (r) => r.status === "active" || r.status === "cancelling";
+  const recurring = (p) => !!p && p.amount > 0 && (p.interval === "month" || p.interval === "year");
+  const mEq = (p) => (p.interval === "year" ? p.amount / 12 : p.amount);
+  const cur = (p) => (p && p.currency ? String(p.currency).toUpperCase() : "?");
+  const add = (o, k, v) => { o[k] = (o[k] || 0) + v; return o; };
+  const round = (o) => { const out = {}; for (const k of Object.keys(o).sort()) out[k] = r2(o[k]); return out; };
+  const inLast = (s, days) => { const t = T(s); return t > now - days * DAY && t <= now; };
+  const inNext = (s, d0, d1) => { const t = T(s); return t >= now + d0 * DAY && t < now + d1 * DAY; };
+  const avgBy = (list, val) => {
+    const s = {}, n = {};
+    for (const r of list) { add(s, cur(r.plan), val(r)); add(n, cur(r.plan), 1); }
+    const o = {}; for (const k of Object.keys(s).sort()) o[k] = r2(s[k] / n[k]);
+    return o;
+  };
+  const of = (st) => recs.filter((r) => r.status === st);
+  const active = of("active"), cancelling = of("cancelling"), churned = of("churned");
+  // Oldest status date read for a status whose read was cut by the page cap (null = read complete).
+  const floor = (st, field) => {
+    if (!partial.includes(st)) return null;
+    let m = Infinity; for (const r of of(st)) { const t = T(r[field]); if (t < m) m = t; }
+    return m;
+  };
+  const activeFloor = floor("active", "joinedAt"), churnFloor = floor("churned", "churnedAt");
+  const covers = (fl, days) => fl === null || fl <= now - days * DAY;
+
+  const activeNow = !windowed && !partial.includes("active") ? active.length : C.active ?? null;
+  const cancellingNow = !admin ? null : !windowed && !partial.includes("cancelling") ? cancelling.length : C.cancelling ?? null;
+
+  // Revenue: active, not team, not on trial, recurring plan > 0. Never mixes currencies.
+  const hasBilling = admin && recs.some((r) => r.plan && r.plan.amount != null);
+  const payers = active.filter((r) => !team(r) && !r.onTrial && recurring(r.plan));
+  let mrr = null, payingBy = null, paying = null, mrrSource = null;
+  if (admin && !windowed && hasBilling) {
+    mrr = {}; payingBy = {};
+    for (const r of payers) { add(mrr, cur(r.plan), mEq(r.plan)); add(payingBy, cur(r.plan), 1); }
+    paying = payers.length; mrrSource = "records";
+  } else if (admin && windowed && C.monthly != null && C.annual != null) {
+    paying = C.monthly + C.annual;
+    const price = (interval) => {
+      const seenP = new Map();
+      for (const r of recs) if (r.plan && r.plan.amount > 0 && r.plan.interval === interval) seenP.set(`${r.plan.amount}|${cur(r.plan)}`, r.plan);
+      return seenP.size === 1 ? [...seenP.values()][0] : null;
+    };
+    const pm = price("month"), pa = price("year");
+    if ((C.monthly === 0 || pm) && (C.annual === 0 || pa)) {
+      mrr = {}; payingBy = {};
+      if (C.monthly) { add(mrr, cur(pm), C.monthly * pm.amount); add(payingBy, cur(pm), C.monthly); }
+      if (C.annual) { add(mrr, cur(pa), (C.annual * pa.amount) / 12); add(payingBy, cur(pa), C.annual); }
+      mrrSource = "counts";
+    }
+  }
+  const rank = (o) => Object.keys(o || {}).sort((a, b) => o[b] - o[a] || a.localeCompare(b));
+  let primaryCurrency = payingBy && Object.keys(payingBy).length
+    ? Object.keys(payingBy).sort((a, b) => payingBy[b] - payingBy[a] || mrr[b] - mrr[a] || a.localeCompare(b))[0] : null;
+  if (!primaryCurrency && hasBilling) {
+    const seenC = {}; for (const r of recs) if (r.plan && r.plan.currency) add(seenC, cur(r.plan), 1);
+    primaryCurrency = rank(seenC)[0] || null;
+  }
+  const arr = mrr ? Object.fromEntries(Object.keys(mrr).sort().map((k) => [k, r2(mrr[k] * 12)])) : null;
+  const arpu = mrr && payingBy ? Object.fromEntries(Object.keys(mrr).sort().map((k) => [k, r2(mrr[k] / payingBy[k])])) : null;
+
+  // Plan mix of active members (team excluded).
+  let mix = null, tiers = null;
+  if (admin && !windowed && hasBilling) {
+    mix = { monthly: 0, annual: 0, oneTime: 0, free: 0, trial: 0, noData: 0 }; tiers = {};
+    for (const r of active) {
+      if (team(r)) continue;
+      const p = r.plan;
+      if (r.onTrial) mix.trial++;
+      else if (!p || p.amount == null) mix.noData++;
+      else if (p.amount === 0) mix.free++;
+      else if (p.interval === "month") mix.monthly++;
+      else if (p.interval === "year") mix.annual++;
+      else mix.oneTime++;
+      if (p && p.tier && p.amount > 0 && !r.onTrial) add(tiers, p.tier, 1);
+    }
+  } else if (admin && windowed) {
+    const n = (x) => (typeof x === "number" ? x : null);
+    mix = { monthly: n(C.monthly), annual: n(C.annual), oneTime: n(C.oneTime), free: n(C.free), trial: n(C.trial), noData: null };
+  }
+
+  const trialRecs = active.filter((r) => r.onTrial && !team(r));
+  const trials = !admin ? null : windowed
+    ? { count: C.trial ?? null, mrr: null, endingIn7: null }
+    : { count: trialRecs.length, mrr: round(trialRecs.filter((r) => recurring(r.plan)).reduce((o, r) => add(o, cur(r.plan), mEq(r.plan)), {})),
+        endingIn7: trialRecs.filter((r) => inNext(r.trialEndsAt, 0, 7)).length };
+
+  // Money at risk: cancelling members, payment failed vs cancelled.
+  let risk = null;
+  if (admin) {
+    const lane = () => ({ count: 0, mrr: {}, nextLeaves: null, lastLeaves: null });
+    const R = { failed: lane(), cancelled: lane() };
+    const list = [];
+    for (const r of cancelling) {
+      if (team(r)) continue;
+      const k = r.paymentFailedAt ? "failed" : "cancelled", x = R[k];
+      x.count++;
+      if (recurring(r.plan)) add(x.mrr, cur(r.plan), mEq(r.plan));
+      const t = T(r.churnsAt);
+      if (!isNaN(t)) {
+        if (t >= now && (x.nextLeaves == null || t < T(x.nextLeaves))) x.nextLeaves = r.churnsAt;
+        if (x.lastLeaves == null || t > T(x.lastLeaves)) x.lastLeaves = r.churnsAt;
+      }
+      list.push({ name: r.name, lane: k, amount: recurring(r.plan) ? r2(mEq(r.plan)) : null, currency: r.plan ? cur(r.plan) : null, churnsAt: r.churnsAt || null });
+    }
+    const total = { count: R.failed.count + R.cancelled.count, mrr: {} };
+    for (const k of ["failed", "cancelled"]) { for (const c in R[k].mrr) add(total.mrr, c, R[k].mrr[c]); R[k].mrr = round(R[k].mrr); }
+    total.mrr = round(total.mrr);
+    list.sort((a, b) => (T(a.churnsAt) || Infinity) - (T(b.churnsAt) || Infinity));
+    risk = { failed: R.failed, cancelled: R.cancelled, total, list };
+  }
+
+  // Joins vs churn. Paying = recurring plan, not on trial, and (if churned) paid something.
+  const payingRec = (r) => !team(r) && recurring(r.plan) && !r.onTrial && !(r.status === "churned" && r.ltv === 0);
+  const payCancelling = admin ? cancelling.filter(payingRec).length : null;
+  function growth(d) {
+    if (d > windowDays) return null;
+    const jOk = covers(activeFloor, d), cOk = admin && covers(churnFloor, d);
+    const J = recs.filter((r) => inLast(r.joinedAt, d)), Ch = churned.filter((r) => inLast(r.churnedAt, d));
+    const joins = jOk ? J.length : null, ch = cOk ? Ch.length : null;
+    const base = joins != null && ch != null && activeNow != null && cancellingNow != null ? activeNow + cancellingNow + ch - joins : null;
+    const pJ = jOk && admin ? J.filter(payingRec).length : null, pCh = cOk ? Ch.filter(payingRec).length : null;
+    const pBase = paying != null && pJ != null && pCh != null ? paying + payCancelling + pCh - pJ : null;
+    return {
+      days: d, joins, churned: ch, net: joins != null && ch != null ? joins - ch : null,
+      churnRate: base > 0 ? r3(ch / base) : null, base,
+      payingJoins: pJ, payingChurned: pCh, payingChurnRate: pBase > 0 ? r3(pCh / pBase) : null, payingBase: pBase,
+    };
+  }
+  const nW = Math.max(1, Math.floor(windowDays / 7));
+  const weeks = [];
+  for (let i = 0; i < nW; i++) {
+    const s = now - (nW - i) * 7 * DAY, e = s + 7 * DAY;
+    const inW = (x) => { const t = T(x); return t > s && t <= e; };
+    weeks.push({
+      start: iso(s), end: iso(e),
+      joins: activeFloor === null || activeFloor <= s ? recs.filter((r) => inW(r.joinedAt)).length : null,
+      churned: admin && (churnFloor === null || churnFloor <= s) ? churned.filter((r) => inW(r.churnedAt)).length : null,
+    });
+  }
+
+  // Cohorts: join months that start inside the window (older months lost their early churners).
+  let cohorts = null;
+  if (admin && !windowed && covers(activeFloor, windowDays) && covers(churnFloor, windowDays)) {
+    cohorts = [];
+    const d0 = new Date(now);
+    let y = d0.getUTCFullYear(), m = d0.getUTCMonth();
+    while (Date.UTC(y, m, 1) >= now - windowDays * DAY) {
+      const s = Date.UTC(y, m, 1), e = Date.UTC(y, m + 1, 1);
+      const J = recs.filter((r) => { const t = T(r.joinedAt); return t >= s && t < e; });
+      const still = J.filter(inside).length;
+      cohorts.unshift({ month: `${y}-${String(m + 1).padStart(2, "0")}`, joined: J.length, stillIn: still, retention: J.length ? r3(still / J.length) : null, inProgress: e > now });
+      if (--m < 0) { m = 11; y--; }
+    }
+  }
+
+  // Acquisition: joins in the window per source, how many are still in, avg LTV so far (primary currency).
+  let sources = null, affiliates = null;
+  if (admin && recs.some((r) => r.source)) {
+    const key = (r) => (r.source === "external" ? `external:${String(r.sourceDetail || "?").toLowerCase()}` : r.source || "unknown");
+    const S = {};
+    for (const r of recs) {
+      if (team(r)) continue;
+      const k = key(r), x = (S[k] = S[k] || { key: k, joins: 0, stillIn: 0, ltvSum: 0, ltvN: 0 });
+      if (inLast(r.joinedAt, windowDays)) { x.joins++; if (inside(r)) x.stillIn++; }
+      if (primaryCurrency && r.plan && cur(r.plan) === primaryCurrency && typeof r.ltv === "number") { x.ltvSum += r.ltv; x.ltvN++; }
+    }
+    let list = Object.values(S).filter((x) => x.joins > 0).sort((a, b) => b.joins - a.joins || b.stillIn - a.stillIn || a.key.localeCompare(b.key));
+    if (list.length > 8) {
+      const rest = list.slice(7).reduce((o, x) => ({ key: "other", joins: o.joins + x.joins, stillIn: o.stillIn + x.stillIn, ltvSum: o.ltvSum + x.ltvSum, ltvN: o.ltvN + x.ltvN }), { key: "other", joins: 0, stillIn: 0, ltvSum: 0, ltvN: 0 });
+      list = list.slice(0, 7).concat([rest]);
+    }
+    sources = list.map((x) => ({ key: x.key, joins: x.joins, stillIn: x.stillIn, retention: x.joins ? r3(x.stillIn / x.joins) : null, avgLtv: x.ltvN ? r2(x.ltvSum / x.ltvN) : null }));
+    const A = {};
+    for (const r of recs) {
+      if (!r.referredBy || !inLast(r.joinedAt, windowDays)) continue;
+      const x = (A[r.referredBy] = A[r.referredBy] || { name: r.referredBy, joins: 0, stillIn: 0 });
+      x.joins++; if (inside(r)) x.stillIn++;
+    }
+    affiliates = Object.values(A).sort((a, b) => b.joins - a.joins || b.stillIn - a.stillIn || a.name.localeCompare(b.name)).slice(0, 8);
+  }
+
+  // Engagement of members inside (active + cancelling, team excluded). Exact reads only.
+  let engagement = null;
+  if (!windowed) {
+    const base = recs.filter((r) => inside(r) && !team(r));
+    if (base.length) {
+      const levels = Array(9).fill(0);
+      for (const r of base) if (r.level >= 1 && r.level <= 9) levels[r.level - 1]++;
+      engagement = {
+        members: base.length, levels,
+        online7: r3(base.filter((r) => inLast(r.lastActiveAt, 7)).length / base.length),
+        online30: r3(base.filter((r) => inLast(r.lastActiveAt, 30)).length / base.length),
+        noPosts: r3(base.filter((r) => !r.postCount).length / base.length),
+      };
+    }
+  }
+
+  // Renewals in the next 30 days: actual charge (monthly or annual amount), per currency.
+  let renewals = null;
+  if (admin && !windowed && hasBilling) {
+    const B = [[0, 7], [7, 14], [14, 21], [21, 30]];
+    const buckets = B.map(([a, b]) => ({ start: iso(now + a * DAY), end: iso(now + b * DAY), count: 0, amount: {} }));
+    const annual = [], total = { count: 0, amount: {} };
+    for (const r of active) {
+      if (team(r) || r.onTrial || !recurring(r.plan) || !inNext(r.renewsAt, 0, 30)) continue;
+      const t = T(r.renewsAt), i = B.findIndex(([, b]) => t < now + b * DAY);
+      buckets[i].count++; add(buckets[i].amount, cur(r.plan), r.plan.amount);
+      total.count++; add(total.amount, cur(r.plan), r.plan.amount);
+      if (r.plan.interval === "year") annual.push({ name: r.name, amount: r.plan.amount, currency: cur(r.plan), renewsAt: r.renewsAt, lastActiveAt: r.lastActiveAt || null, stale: !(T(r.lastActiveAt) > now - 21 * DAY) });
+    }
+    for (const b of buckets) b.amount = round(b.amount);
+    total.amount = round(total.amount);
+    annual.sort((a, b) => T(a.renewsAt) - T(b.renewsAt));
+    renewals = { buckets, total, annual, staleAnnual: annual.filter((a) => a.stale).length };
+  }
+
+  // Lifetime value (currency units, per currency).
+  let ltv = null;
+  if (admin && hasBilling) {
+    const left = churned.filter((r) => inLast(r.churnedAt, windowDays) && r.ltv > 0 && r.plan);
+    const paid = payers.filter((r) => typeof r.ltv === "number");
+    ltv = { churned: left.length ? avgBy(left, (r) => r.ltv) : null, churnedCount: left.length, payers: !windowed && paid.length ? avgBy(paid, (r) => r.ltv) : null };
+  }
+
+  // History: saved totals + today's point; deltas vs the point closest to 30 days ago (20–45 d).
+  const today = iso(now).slice(0, 10);
+  const hist = ((D && D.history) || []).filter((x) => x && x.date && x.date < today).slice().sort((a, b) => (a.date < b.date ? -1 : 1));
+  let ref = null, refGap = Infinity;
+  for (const x of hist) {
+    const age = (now - Date.parse(x.date)) / DAY;
+    if (age >= 20 && age <= 45 && Math.abs(age - 30) < refGap) { ref = x; refGap = Math.abs(age - 30); }
+  }
+  const pc = primaryCurrency;
+  const mrrDelta = ref && pc && mrr && mrr[pc] != null && ref.mrr && ref.mrr[pc] > 0 ? r3((mrr[pc] - ref.mrr[pc]) / ref.mrr[pc]) : null;
+  const activeDelta = ref && ref.active != null && activeNow != null ? activeNow - ref.active : null;
+  const g30 = growth(30), g90 = growth(90);
+  const historyEntry = {
+    date: today, method: windowed ? "windowed" : "exact", active: activeNow, cancelling: cancellingNow, paying,
+    mrr: mrr ? round(mrr) : null, joins30: g30 ? g30.joins : null, churned30: g30 ? g30.churned : null,
+  };
+  const trend = hist.map((x) => ({ date: x.date, active: x.active ?? null, mrr: x.mrr || null })).concat([{ date: today, active: activeNow, mrr: mrr ? round(mrr) : null, current: true }]);
+
+  const missing = [];
+  if (!admin) missing.push("member_view");
+  if (windowed) {
+    missing.push("renewals", "engagement", "cohorts");
+    if (admin && !mrr) missing.push("mrr");
+  }
+  for (const p of partial) missing.push(`partial_${p}`);
+  const cov = meta.coverage || {};
+  if (!windowed && C.active && cov.activeRead != null && cov.activeRead < C.active * 0.98) missing.push("coverage");
+
+  return {
+    now: iso(now), from: iso(now - windowDays * DAY), to: iso(now), windowDays, windowed, admin,
+    method: windowed ? "windowed" : "exact", view: admin ? "admin" : "member", partial, coverage: cov, counts: C,
+    activeNow, cancellingNow, paying, payingBy, mrr: mrr ? round(mrr) : null, arr, arpu, primaryCurrency: pc, mrrSource,
+    mix, tiers, trials, risk, growth30: g30, growth90: g90, weeks, cohorts, sources, affiliates, engagement, renewals, ltv,
+    ref: ref ? { date: ref.date, active: ref.active ?? null, mrr: ref.mrr || null } : null, mrrDelta, activeDelta,
+    trend, historyEntry, missing,
+  };
+}
+// </stats>
+
+(function () {
+  "use strict";
+  const L = {
+    en: { title: "Growth", generated: "Generated", exact: "exact", windowed: "windowed", adminView: "admin view", memberView: "member view",
+      activeN: "{n} active", readOf: "{a} of ~{b} active read", private: "Private: contains member names and amounts. Don't publish or share this page.",
+      summary: "Summary", risks: "Risks", wins: "Wins", action: "Next action", nodata: "no data", perMo: "/mo", unknownCur: "(currency unknown)",
+      why_admin: "needs a Skool admin account", why_windowed: "needs the exact read (shell + myskool CLI)", why_billing: "no billing data",
+      k_active: "Active members", k_mrr: "Est. MRR", k_arr: "Est. ARR", k_paying: "Paying members", k_arpu: "ARPU", k_trials: "On trial", k_cancelling: "Cancelling",
+      k_net: "Net growth · 30 d", k_churn: "Churn rate · 30 d", vs: "vs {d}", fromCounts: "from counts × price", arrSub: "12 × MRR",
+      payingSub: "{a} one-time · {b} free", ifConvert: "{v} if they convert", endIn7: "{n} end within 7 d", atRisk: "{v} at risk",
+      joinsLeft: "{j} joined · {c} left", joinsOnly: "{j} joined", payingChurn: "paying members: {p}",
+      growthChart: "Joins vs churn · weekly", joined: "Joined", churned: "Churned", weekOf: "Week of {d}", window: "Last {n} days: {j} joined · {c} churned · net {net}",
+      weeklyTable: "Weekly numbers (table)", thWeek: ["Week", "Joined", "Churned", "Net"],
+      riskTitle: "Money at risk", failed: "Payment failed", cancelled: "Cancelled", nextLeaves: "first leaves {d}", leavingBy: "last leaves {d}", leaves: "leaves {d}", noPlan: "no plan", nextOut: "Next to lose access",
+      renewTitle: "Renewals · next 30 days", renewals: "Renewals", renewTotal: "{n} renewals · {v}", annualTitle: "Annual renewals", stale: "stale login", renewsOn: "renews {d}",
+      online: "online {d}", neverOnline: "no login data", thRenew: ["Week", "Renewals", "Amount"],
+      mixTitle: "Plan mix · active members", monthly: "Monthly", annual: "Annual", oneTime: "One-time", free: "Free", trial: "Trial", noData: "No billing data", tiersTitle: "Tiers (paid plans)",
+      srcTitle: "Where members come from · last {n} days", thSrc: ["Source", "Joined", "Still in", "Avg LTV ({c})"],
+      skool: "Skool Discovery", direct: "Direct link", invite: "Invite", affiliate: "Affiliates", unknown: "Unknown", other: "Other",
+      affTitle: "Top affiliates · last {n} days", affLine: "{j} joined · {s} still in", ltvTitle: "Lifetime value", ltvChurned: "Avg paid by members who left (last {n} d, {k} members)", ltvPayers: "Avg paid so far by current payers",
+      cohortTitle: "Retention by join month", thCohort: ["Joined in", "Members", "Still in", "Retention"], inProgress: "in progress",
+      engTitle: "Engagement · members inside", online7: "Online in the last 7 days", online30: "Online in the last 30 days", noPosts: "Never posted", levels: "Members per level", level: "Level {n}",
+      surveyTitle: "What new members want (join answers)", answers: "answers",
+      trendTitle: "Trend", trendMrr: "Est. MRR ({c})", trendActive: "Active members", noHistory: "First run: the trend starts with the next saved run.",
+      none: "Nothing here.",
+      b_member: "Your Skool account isn't an admin of {g}, so billing, cancellations and churn aren't visible.",
+      b_windowed: "Windowed read (big community over MCP): {list} not computed. Run it from a shell with the myskool CLI for exact numbers.",
+      m_renewals: "renewals", m_engagement: "levels and activity", m_cohorts: "cohorts", m_mrr: "MRR (prices differ between members)",
+      b_partial_active: "The active list was cut by the page cap: older joins are missing.", b_partial_cancelling: "The cancelling list was cut by the page cap.", b_partial_churned: "The churned list was cut by the page cap: older churn is missing.",
+      b_coverage: "Read the {a} newest of ~{b} active members: MRR, plan mix, renewals and engagement cover those only.",
+      estimate: "Estimated: list price at signup, before fees, taxes and coupons. Skool's Metrics page is the source of truth for payouts. Currencies are never added together.",
+      empty: "No data yet. Run the myskool-growth-dashboard skill to fill this dashboard." },
+    es: { title: "Crecimiento", generated: "Generado", exact: "exacto", windowed: "por ventana", adminView: "vista admin", memberView: "vista de miembro",
+      activeN: "{n} activos", readOf: "{a} de ~{b} activos leídos", private: "Privado: contiene nombres e importes de miembros. No publiques ni compartas esta página.",
+      summary: "Resumen", risks: "Riesgos", wins: "Logros", action: "Siguiente acción", nodata: "sin datos", perMo: "/mes", unknownCur: "(moneda desconocida)",
+      why_admin: "requiere una cuenta admin de Skool", why_windowed: "requiere la lectura exacta (terminal + CLI myskool)", why_billing: "sin datos de cobro",
+      k_active: "Miembros activos", k_mrr: "MRR estimado", k_arr: "ARR estimado", k_paying: "Miembros que pagan", k_arpu: "ARPU", k_trials: "En prueba", k_cancelling: "Cancelando",
+      k_net: "Crecimiento neto · 30 d", k_churn: "Tasa de bajas · 30 d", vs: "vs {d}", fromCounts: "de conteos × precio", arrSub: "12 × MRR",
+      payingSub: "{a} pago único · {b} gratis", ifConvert: "{v} si convierten", endIn7: "{n} terminan en 7 d", atRisk: "{v} en riesgo",
+      joinsLeft: "{j} altas · {c} bajas", joinsOnly: "{j} altas", payingChurn: "de pago: {p}",
+      growthChart: "Altas vs bajas · por semana", joined: "Altas", churned: "Bajas", weekOf: "Semana del {d}", window: "Últimos {n} días: {j} altas · {c} bajas · neto {net}",
+      weeklyTable: "Números por semana (tabla)", thWeek: ["Semana", "Altas", "Bajas", "Neto"],
+      riskTitle: "Dinero en riesgo", failed: "Pago fallido", cancelled: "Canceló", nextLeaves: "el primero sale el {d}", leavingBy: "el último sale el {d}", leaves: "sale el {d}", noPlan: "sin plan", nextOut: "Próximos en perder acceso",
+      renewTitle: "Renovaciones · próximos 30 días", renewals: "Renovaciones", renewTotal: "{n} renovaciones · {v}", annualTitle: "Renovaciones anuales", stale: "no entra hace semanas", renewsOn: "renueva el {d}",
+      online: "en línea {d}", neverOnline: "sin datos de acceso", thRenew: ["Semana", "Renovaciones", "Importe"],
+      mixTitle: "Planes · miembros activos", monthly: "Mensual", annual: "Anual", oneTime: "Pago único", free: "Gratis", trial: "Prueba", noData: "Sin datos de cobro", tiersTitle: "Niveles de plan (de pago)",
+      srcTitle: "De dónde vienen · últimos {n} días", thSrc: ["Origen", "Altas", "Siguen", "LTV medio ({c})"],
+      skool: "Skool Discovery", direct: "Enlace directo", invite: "Invitación", affiliate: "Afiliados", unknown: "Desconocido", other: "Otros",
+      affTitle: "Mejores afiliados · últimos {n} días", affLine: "{j} altas · {s} siguen", ltvTitle: "Valor de vida (LTV)", ltvChurned: "Media pagada por quienes se fueron (últimos {n} d, {k} miembros)", ltvPayers: "Media pagada hasta hoy por quienes pagan",
+      cohortTitle: "Retención por mes de alta", thCohort: ["Alta en", "Miembros", "Siguen", "Retención"], inProgress: "en curso",
+      engTitle: "Participación · miembros dentro", online7: "Entraron en los últimos 7 días", online30: "Entraron en los últimos 30 días", noPosts: "Nunca publicaron", levels: "Miembros por nivel", level: "Nivel {n}",
+      surveyTitle: "Qué buscan los nuevos (preguntas de ingreso)", answers: "respuestas",
+      trendTitle: "Tendencia", trendMrr: "MRR estimado ({c})", trendActive: "Miembros activos", noHistory: "Primera ejecución: la tendencia empieza con la próxima.",
+      none: "Nada por aquí.",
+      b_member: "Tu cuenta de Skool no es admin de {g}, así que no se ven cobros, cancelaciones ni bajas.",
+      b_windowed: "Lectura por ventana (comunidad grande por MCP): sin {list}. Ejecútalo desde una terminal con la CLI myskool para números exactos.",
+      m_renewals: "renovaciones", m_engagement: "niveles y actividad", m_cohorts: "cohortes", m_mrr: "MRR (los precios varían entre miembros)",
+      b_partial_active: "La lista de activos se cortó por el límite de páginas: faltan altas más antiguas.", b_partial_cancelling: "La lista de cancelaciones se cortó por el límite de páginas.", b_partial_churned: "La lista de bajas se cortó por el límite de páginas: faltan bajas más antiguas.",
+      b_coverage: "Se leyeron los {a} activos más recientes de ~{b}: MRR, planes, renovaciones y participación cubren solo a esos.",
+      estimate: "Estimado: precio de lista al suscribirse, antes de comisiones, impuestos y cupones. La página Metrics de Skool es la referencia para los pagos. Nunca se suman monedas distintas.",
+      empty: "Aún no hay datos. Ejecuta la skill myskool-growth-dashboard para llenar este panel." },
+    pt: { title: "Crescimento", generated: "Gerado", exact: "exato", windowed: "por janela", adminView: "visão admin", memberView: "visão de membro",
+      activeN: "{n} ativos", readOf: "{a} de ~{b} ativos lidos", private: "Privado: contém nomes e valores de membros. Não publique nem compartilhe esta página.",
+      summary: "Resumo", risks: "Riscos", wins: "Conquistas", action: "Próxima ação", nodata: "sem dados", perMo: "/mês", unknownCur: "(moeda desconhecida)",
+      why_admin: "precisa de uma conta admin do Skool", why_windowed: "precisa da leitura exata (terminal + CLI myskool)", why_billing: "sem dados de cobrança",
+      k_active: "Membros ativos", k_mrr: "MRR estimado", k_arr: "ARR estimado", k_paying: "Membros pagantes", k_arpu: "ARPU", k_trials: "Em teste", k_cancelling: "Cancelando",
+      k_net: "Crescimento líquido · 30 d", k_churn: "Taxa de churn · 30 d", vs: "vs {d}", fromCounts: "de contagens × preço", arrSub: "12 × MRR",
+      payingSub: "{a} pagamento único · {b} grátis", ifConvert: "{v} se converterem", endIn7: "{n} terminam em 7 d", atRisk: "{v} em risco",
+      joinsLeft: "{j} entradas · {c} saídas", joinsOnly: "{j} entradas", payingChurn: "pagantes: {p}",
+      growthChart: "Entradas vs saídas · por semana", joined: "Entradas", churned: "Saídas", weekOf: "Semana de {d}", window: "Últimos {n} dias: {j} entradas · {c} saídas · líquido {net}",
+      weeklyTable: "Números por semana (tabela)", thWeek: ["Semana", "Entradas", "Saídas", "Líquido"],
+      riskTitle: "Dinheiro em risco", failed: "Pagamento falhou", cancelled: "Cancelou", nextLeaves: "o primeiro sai em {d}", leavingBy: "o último sai em {d}", leaves: "sai em {d}", noPlan: "sem plano", nextOut: "Próximos a perder acesso",
+      renewTitle: "Renovações · próximos 30 dias", renewals: "Renovações", renewTotal: "{n} renovações · {v}", annualTitle: "Renovações anuais", stale: "sem acessar há semanas", renewsOn: "renova em {d}",
+      online: "online {d}", neverOnline: "sem dados de acesso", thRenew: ["Semana", "Renovações", "Valor"],
+      mixTitle: "Planos · membros ativos", monthly: "Mensal", annual: "Anual", oneTime: "Pagamento único", free: "Grátis", trial: "Teste", noData: "Sem dados de cobrança", tiersTitle: "Níveis de plano (pagos)",
+      srcTitle: "De onde vêm · últimos {n} dias", thSrc: ["Origem", "Entradas", "Ficaram", "LTV médio ({c})"],
+      skool: "Skool Discovery", direct: "Link direto", invite: "Convite", affiliate: "Afiliados", unknown: "Desconhecido", other: "Outros",
+      affTitle: "Melhores afiliados · últimos {n} dias", affLine: "{j} entradas · {s} ficaram", ltvTitle: "Valor vitalício (LTV)", ltvChurned: "Média paga por quem saiu (últimos {n} d, {k} membros)", ltvPayers: "Média paga até hoje por quem paga",
+      cohortTitle: "Retenção por mês de entrada", thCohort: ["Entrou em", "Membros", "Ficaram", "Retenção"], inProgress: "em andamento",
+      engTitle: "Engajamento · membros dentro", online7: "Acessaram nos últimos 7 dias", online30: "Acessaram nos últimos 30 dias", noPosts: "Nunca postaram", levels: "Membros por nível", level: "Nível {n}",
+      surveyTitle: "O que os novos querem (perguntas de entrada)", answers: "respostas",
+      trendTitle: "Tendência", trendMrr: "MRR estimado ({c})", trendActive: "Membros ativos", noHistory: "Primeira execução: a tendência começa na próxima.",
+      none: "Nada aqui.",
+      b_member: "Sua conta do Skool não é admin de {g}, então cobranças, cancelamentos e saídas não aparecem.",
+      b_windowed: "Leitura por janela (comunidade grande via MCP): sem {list}. Rode pelo terminal com a CLI myskool para números exatos.",
+      m_renewals: "renovações", m_engagement: "níveis e atividade", m_cohorts: "coortes", m_mrr: "MRR (os preços variam entre membros)",
+      b_partial_active: "A lista de ativos foi cortada pelo limite de páginas: faltam entradas mais antigas.", b_partial_cancelling: "A lista de cancelamentos foi cortada pelo limite de páginas.", b_partial_churned: "A lista de saídas foi cortada pelo limite de páginas: faltam saídas mais antigas.",
+      b_coverage: "Foram lidos os {a} ativos mais recentes de ~{b}: MRR, planos, renovações e engajamento cobrem só esses.",
+      estimate: "Estimado: preço de tabela na assinatura, antes de taxas, impostos e cupons. A página Metrics do Skool é a referência para os repasses. Moedas diferentes nunca são somadas.",
+      empty: "Ainda não há dados. Rode a skill myskool-growth-dashboard para preencher este painel." },
+  };
+  const app = document.getElementById("app");
+  const tip = document.getElementById("tip");
+  const lang = DATA && DATA.meta && L[DATA.meta.language] ? DATA.meta.language : "en";
+  const t = (k, vars) => String(L[lang][k] ?? L.en[k] ?? k).replace(/\{(\w+)\}/g, (_, v) => (vars || {})[v] ?? "");
+  const nf = new Intl.NumberFormat(lang);
+  const pf = new Intl.NumberFormat(lang, { style: "percent", maximumFractionDigits: 0 });
+  const pf1 = new Intl.NumberFormat(lang, { style: "percent", maximumFractionDigits: 1 });
+  const amt = (n) => new Intl.NumberFormat(lang, { maximumFractionDigits: Math.abs(n) >= 100 ? 0 : 1 }).format(n);
+  const fd = (s) => (s ? new Date(s).toLocaleDateString(lang, { day: "numeric", month: "short", timeZone: "UTC" }) : "—");
+  document.documentElement.lang = lang;
+
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v; else if (k === "style") el.style.cssText = v; else el.setAttribute(k, v);
+    }
+    for (const c of kids.flat(Infinity)) if (c != null && c !== false) el.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    return el;
+  }
+  const safeUrl = (u) => (typeof u === "string" && /^https?:\/\//i.test(u) ? u : null);
+  const card = (title, ...kids) => h("section", { class: "card" }, h("h2", null, title), ...kids);
+  const none = () => h("p", { class: "meta" }, t("none"));
+
+  function withTip(el, value, label) {
+    el.classList.add("focusable");
+    el.tabIndex = 0;
+    const show = (e) => {
+      tip.replaceChildren(h("b", null, value), h("span", null, label));
+      tip.hidden = false;
+      const r = el.getBoundingClientRect();
+      const x = e && e.clientX ? e.clientX : r.left + r.width / 2, y = e && e.clientY ? e.clientY : r.top;
+      tip.style.left = Math.max(8, Math.min(x + 12, innerWidth - tip.offsetWidth - 8)) + "px";
+      tip.style.top = Math.max(8, y - tip.offsetHeight - 10) + "px";
+    };
+    el.addEventListener("pointermove", show); el.addEventListener("focus", () => show());
+    el.addEventListener("pointerleave", () => (tip.hidden = true)); el.addEventListener("blur", () => (tip.hidden = true));
+    return el;
+  }
+
+  if (!DATA) { app.append(h("div", { class: "empty" }, h("h1", null, `MySkool · ${L.en.title}`), h("p", null, t("empty")))); return; }
+  const S = computeStats(DATA);
+  const M = DATA.meta || {};
+  const pc = S.primaryCurrency;
+  const curName = (c) => (c === "?" ? t("unknownCur") : c);
+  const curOrder = (map) => Object.keys(map || {}).sort((a, b) => (a === pc ? -1 : b === pc ? 1 : map[b] - map[a] || a.localeCompare(b)));
+  const money = (n, c) => `${amt(n)} ${curName(c)}`;
+  const moneyList = (map, suffix) => (map && Object.keys(map).length ? curOrder(map).map((c) => money(map[c], c) + (suffix || "")).join(" · ") : null);
+  const big = (n, c, suffix) => h("span", null, amt(n), h("small", null, ` ${curName(c)}${suffix || ""}`));
+  const why = !S.admin ? t("why_admin") : S.windowed ? t("why_windowed") : null;
+  const nd = (reason) => h("p", { class: "meta" }, reason ? `${t("nodata")} · ${reason}` : t("nodata"));
+  const signed = (n) => (n > 0 ? `+${nf.format(n)}` : n < 0 ? `−${nf.format(-n)}` : "0");
+
+  // ---- Header ---------------------------------------------------------------
+  app.append(h("h1", null, `${t("title")} · ${M.group || ""}`));
+  const cov = S.coverage || {};
+  app.append(h("p", { class: "sub" },
+    h("span", { class: "badge" }, S.windowed ? t("windowed") : t("exact")),
+    h("span", { class: "badge" }, S.admin ? t("adminView") : t("memberView")),
+    `${fd(S.from)} – ${fd(S.to)} · ${t("generated")} ${new Date(S.now).toLocaleString(lang, { dateStyle: "medium", timeStyle: "short" })}`,
+    S.activeNow != null ? ` · ${t("activeN", { n: nf.format(S.activeNow) })}` : "",
+    S.missing.includes("coverage") ? ` · ${t("readOf", { a: nf.format(cov.activeRead), b: nf.format(S.counts.active) })}` : "",
+    safeUrl(M.groupUrl) ? [" · ", h("a", { href: safeUrl(M.groupUrl), target: "_blank", rel: "noopener" }, "Skool ↗")] : null));
+  app.append(h("p", { class: "private" }, t("private")));
+
+  const banner = [];
+  if (S.missing.includes("member_view")) banner.push(t("b_member", { g: M.group || "Skool" }));
+  if (S.windowed) {
+    const list = ["mrr", "renewals", "engagement", "cohorts"].filter((k) => S.missing.includes(k)).map((k) => t(`m_${k}`)).join(", ");
+    banner.push(t("b_windowed", { list }));
+  }
+  for (const p of S.partial) if (L.en[`b_partial_${p}`]) banner.push(t(`b_partial_${p}`));
+  if (S.missing.includes("coverage")) banner.push(t("b_coverage", { a: nf.format(cov.activeRead), b: nf.format(S.counts.active) }));
+  if (banner.length) app.append(h("div", { class: "banner", role: "note" }, banner.map((x) => h("p", null, x))));
+
+  // ---- Summary written by the agent -----------------------------------------
+  const sm = DATA.summary;
+  if (sm) {
+    const list = (items) => (items && items.length ? h("ul", null, items.map((x) => h("li", null, x))) : null);
+    app.append(h("div", { class: "grid" }, h("section", { class: "card summary" }, h("h2", null, t("summary")), sm.headline ? h("p", null, sm.headline) : null,
+      sm.risks && sm.risks.length ? [h("div", { class: "k" }, t("risks")), list(sm.risks)] : null,
+      sm.wins && sm.wins.length ? [h("div", { class: "k" }, t("wins")), list(sm.wins)] : null,
+      sm.action ? [h("div", { class: "k" }, t("action")), h("p", null, sm.action)] : null)));
+  }
+
+  // ---- KPI tiles ------------------------------------------------------------
+  function kpi(label, value, sub, cls, extra) {
+    return h("div", { class: "card kpi" }, h("div", { class: "l" }, label),
+      h("div", { class: value == null ? "v nd" : "v" }, value == null ? t("nodata") : value),
+      sub ? h("div", { class: `d ${cls || ""}` }, sub) : null, extra || null);
+  }
+  const others = (map, suffix) => {
+    const ks = curOrder(map).filter((c) => c !== pc);
+    return ks.length ? h("div", null, ks.map((c) => h("span", { class: "chip" }, money(map[c], c) + (suffix || "")))) : null;
+  };
+  const pcVal = (map, suffix) => (!map ? null : pc && map[pc] != null ? big(map[pc], pc, suffix) : Object.keys(map).length ? null : "0");
+  const delta = (d, fmt, downGood) => {
+    if (d == null || !S.ref) return [null, null];
+    if (d === 0) return [`= ${t("vs", { d: fd(S.ref.date) })}`, null];
+    const good = downGood ? d < 0 : d > 0;
+    return [`${d > 0 ? "▲" : "▼"} ${d > 0 ? "+" : "−"}${fmt(Math.abs(d))} ${t("vs", { d: fd(S.ref.date) })}`, good ? "good" : "bad"];
+  };
+  const [aSub, aCls] = delta(S.activeDelta, (x) => nf.format(x));
+  let [mSub, mCls] = delta(S.mrrDelta, (x) => pf1.format(x));
+  if (S.mrrSource === "counts") mSub = [mSub, t("fromCounts")].filter(Boolean).join(" · ");
+  if (!S.mrr) mSub = why || t("why_billing");
+  const g30 = S.growth30 || {};
+  const R = S.risk, TR = S.trials;
+  app.append(h("div", { class: "kpis" },
+    kpi(t("k_active"), S.activeNow == null ? null : nf.format(S.activeNow), aSub, aCls),
+    kpi(t("k_mrr"), pcVal(S.mrr, t("perMo")), mSub, mCls, S.mrr ? others(S.mrr, t("perMo")) : null),
+    kpi(t("k_arr"), pcVal(S.arr), S.arr ? t("arrSub") : why, null, S.arr ? others(S.arr) : null),
+    kpi(t("k_paying"), S.paying == null ? null : nf.format(S.paying), S.mix && S.mix.oneTime != null && S.mix.free != null ? t("payingSub", { a: nf.format(S.mix.oneTime), b: nf.format(S.mix.free) }) : null),
+    kpi(t("k_arpu"), pcVal(S.arpu, t("perMo")), null, null, S.arpu ? others(S.arpu, t("perMo")) : null),
+    kpi(t("k_trials"), TR && TR.count != null ? nf.format(TR.count) : null,
+      TR && TR.count ? [moneyList(TR.mrr, t("perMo")) ? t("ifConvert", { v: moneyList(TR.mrr, t("perMo")) }) : null, TR.endingIn7 ? t("endIn7", { n: TR.endingIn7 }) : null].filter(Boolean).join(" · ") || null : null),
+    kpi(t("k_cancelling"), R ? nf.format(R.total.count) : null, R && R.total.count ? t("atRisk", { v: moneyList(R.total.mrr, t("perMo")) || "—" }) : null, R && R.total.count ? "bad" : null),
+    kpi(t("k_net"), g30.net == null ? null : signed(g30.net),
+      g30.joins != null ? (g30.churned != null ? t("joinsLeft", { j: nf.format(g30.joins), c: nf.format(g30.churned) }) : t("joinsOnly", { j: nf.format(g30.joins) })) : null,
+      g30.net > 0 ? "good" : g30.net < 0 ? "bad" : null),
+    kpi(t("k_churn"), g30.churnRate == null ? null : pf1.format(g30.churnRate), g30.payingChurnRate != null ? t("payingChurn", { p: pf1.format(g30.payingChurnRate) }) : null)));
+
+  // ---- Charts (inline SVG, no libraries) ------------------------------------
+  const NS = "http://www.w3.org/2000/svg";
+  const sv = (tag, a) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const svText = (a, s) => { const e = sv("text", a); e.textContent = s; return e; };
+  const nice = (max) => { const p = 10 ** Math.floor(Math.log10(Math.max(1, max))); for (const m of [1, 2, 5, 10]) if (m * p * 2 >= max) return m * p; return 10 * p; };
+  const charts = [];
+  const chartBox = (draw) => { const box = h("div", { class: "chart" }); charts.push([box, draw]); return box; };
+
+  // Vertical bars, one group per category; series = [{name, color, values}].
+  function barChart(cats, series, aria) {
+    return chartBox((box) => {
+      const W = Math.max(240, box.clientWidth || 300), H = 170, ml = 30, mb = 22, mt = 16;
+      const vals = series.flatMap((s) => s.values).filter((v) => v != null);
+      const step = nice(Math.max(1, ...vals)), top = step * 2;
+      const ih = H - mb - mt, iw = W - ml, band = iw / cats.length, n = series.length;
+      const gw = Math.min(n * 22, band * 0.72), gap = n > 1 ? 2 : 0, bw = (gw - gap * (n - 1)) / n;
+      const svg = sv("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": aria });
+      for (const v of [0, step, top]) {
+        const y = mt + ih - (v / top) * ih;
+        svg.append(sv("line", { x1: ml, x2: W, y1: y, y2: y, stroke: v ? "var(--grid)" : "var(--base)", "stroke-width": 1 }));
+        svg.append(svText({ x: ml - 6, y: y + 4, "text-anchor": "end" }, nf.format(v)));
+      }
+      series.forEach((s, j) => {
+        let maxI = -1; s.values.forEach((v, i) => { if (v != null && (maxI < 0 || v > s.values[maxI])) maxI = i; });
+        s.values.forEach((v, i) => {
+          if (v == null || v <= 0) return;
+          const x = ml + i * band + (band - gw) / 2 + j * (bw + gap), bh = (v / top) * ih, y = mt + ih - bh, r = Math.min(4, bh, bw / 2);
+          svg.append(sv("path", { d: `M${x},${mt + ih}V${y + r}Q${x},${y} ${x + r},${y}H${x + bw - r}Q${x + bw},${y} ${x + bw},${y + r}V${mt + ih}Z`, fill: s.color }));
+          if (j === 0 && i === maxI) svg.append(svText({ x: x + bw / 2, y: y - 4, "text-anchor": "middle", style: "fill:var(--ink2)" }, nf.format(v)));
+        });
+      });
+      const every = Math.max(1, Math.ceil(46 / band));
+      cats.forEach((c, i) => {
+        if ((cats.length - 1 - i) % every === 0) svg.append(svText({ x: ml + i * band + band / 2, y: H - 6, "text-anchor": "middle" }, c.label));
+        const hit = sv("rect", { x: ml + i * band, y: mt, width: band, height: ih, fill: "transparent" });
+        withTip(hit, series.map((s) => `${n > 1 ? s.name + " " : ""}${s.values[i] == null ? t("nodata") : nf.format(s.values[i])}`).join(" · "), c.tip);
+        svg.append(hit);
+      });
+      box.replaceChildren(svg);
+    });
+  }
+
+  // One measure over time (no dual axes: MRR and members get their own chart).
+  function lineChart(points, fmt, aria) {
+    return chartBox((box) => {
+      const W = Math.max(240, box.clientWidth || 300), H = 130, ml = 10, mr = 10, mb = 22, mt = 22;
+      const ts = points.map((p) => Date.parse(p.date)), t0 = Math.min(...ts), t1 = Math.max(...ts);
+      const vs = points.map((p) => p.value), lo = Math.min(...vs), hi = Math.max(...vs);
+      const pad = (hi - lo) * 0.2 || Math.max(1, hi * 0.1), y0 = Math.max(0, lo - pad), y1 = hi + pad;
+      const X = (x) => ml + (t1 > t0 ? (x - t0) / (t1 - t0) : 0.5) * (W - ml - mr);
+      const Y = (v) => mt + (1 - (v - y0) / (y1 - y0 || 1)) * (H - mt - mb);
+      const svg = sv("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": aria });
+      svg.append(sv("line", { x1: ml, x2: W - mr, y1: H - mb, y2: H - mb, stroke: "var(--base)", "stroke-width": 1 }));
+      svg.append(sv("path", { d: points.map((p, i) => `${i ? "L" : "M"}${X(ts[i])},${Y(p.value)}`).join(""), fill: "none", stroke: "var(--s1)", "stroke-width": 2, "stroke-linejoin": "round" }));
+      points.forEach((p, i) => {
+        const cx = X(ts[i]), cy = Y(p.value);
+        svg.append(sv("circle", { cx, cy, r: 4, fill: "var(--s1)", stroke: "var(--surface)", "stroke-width": 2 }));
+        const hit = sv("circle", { cx, cy, r: 14, fill: "transparent" });
+        withTip(hit, fmt(p.value), fd(p.date));
+        svg.append(hit);
+      });
+      const last = points.length - 1;
+      svg.append(svText({ x: X(ts[last]), y: Y(points[last].value) - 9, "text-anchor": "end", style: "fill:var(--ink2)" }, fmt(points[last].value)));
+      svg.append(svText({ x: ml, y: H - 6, "text-anchor": "start" }, fd(points[0].date)));
+      svg.append(svText({ x: W - mr, y: H - 6, "text-anchor": "end" }, fd(points[last].date)));
+      box.replaceChildren(svg);
+    });
+  }
+
+  function hbars(items) {
+    const shown = items.filter((x) => x.count != null);
+    if (!shown.length) return none();
+    const max = Math.max(1, ...shown.map((x) => x.count));
+    return items.map((x) => withTip(h("div", { class: "hbar" }, h("div", { class: "t" }, x.label),
+      h("div", { class: "t" }, x.count == null ? h("span", { class: "n" }, t("nodata")) : [h("div", { class: "b", style: `width:${(x.count / max) * 80}%` }), h("span", { class: "n" }, nf.format(x.count))])),
+      x.count == null ? t("nodata") : nf.format(x.count), x.label));
+  }
+  const table = (head, rows, right) => h("div", { class: "scroll" }, h("table", null,
+    h("thead", null, h("tr", null, head.map((x, i) => h("th", { class: right && right.includes(i) ? "r" : null }, x)))),
+    h("tbody", null, rows.map((r) => h("tr", null, r.map((x, i) => h("td", { class: right && right.includes(i) ? "r" : null }, x)))))));
+
+  // ---- Joins vs churn + money at risk ---------------------------------------
+  const W8 = S.weeks;
+  const growthBody = [
+    h("div", { class: "legend" }, h("span", null, h("i", { style: "background:var(--s1)" }), t("joined")), h("span", null, h("i", { style: "background:var(--s2)" }), t("churned"))),
+    barChart(W8.map((w) => ({ label: fd(w.start), tip: `${t("weekOf", { d: fd(w.start) })} – ${fd(w.end)}` })),
+      [{ name: t("joined"), color: "var(--s1)", values: W8.map((w) => w.joins) }, { name: t("churned"), color: "var(--s2)", values: W8.map((w) => w.churned) }], t("growthChart")),
+  ];
+  const gw = S.growth90 || S.growth30;
+  if (gw) growthBody.push(h("p", { class: "meta" }, t("window", { n: gw.days, j: gw.joins == null ? "—" : nf.format(gw.joins), c: gw.churned == null ? "—" : nf.format(gw.churned), net: gw.net == null ? "—" : signed(gw.net) })));
+  growthBody.push(h("details", null, h("summary", null, t("weeklyTable")),
+    table(L[lang].thWeek, W8.map((w) => [`${fd(w.start)} – ${fd(w.end)}`, w.joins == null ? "—" : nf.format(w.joins), w.churned == null ? "—" : nf.format(w.churned),
+      w.joins == null || w.churned == null ? "—" : signed(w.joins - w.churned)]), [1, 2, 3])));
+
+  let riskBody;
+  if (!R) riskBody = nd(why);
+  else {
+    const lane = (k, title, dateTxt, cls) => h("div", { class: "stat" }, h("div", { class: "l" }, h("span", { class: `chip ${cls}` }, title)),
+      h("div", { class: "n" }, nf.format(R[k].count)), h("div", { class: "meta" }, moneyList(R[k].mrr, t("perMo")) || "—"), dateTxt ? h("div", { class: "meta" }, dateTxt) : null);
+    riskBody = [h("div", { class: "split" },
+      lane("failed", t("failed"), R.failed.nextLeaves ? t("nextLeaves", { d: fd(R.failed.nextLeaves) }) : null, "bad"),
+      lane("cancelled", t("cancelled"), R.cancelled.lastLeaves ? t("leavingBy", { d: fd(R.cancelled.lastLeaves) }) : null, "")),
+      R.list.length ? [h("div", { class: "k" }, t("nextOut")), h("ul", { class: "list" }, R.list.slice(0, 8).map((x) => h("li", null, x.name,
+        h("span", { class: `chip ${x.lane === "failed" ? "bad" : ""}`, style: "margin-left:6px" }, x.lane === "failed" ? t("failed") : t("cancelled")),
+        h("div", { class: "meta" }, `${x.amount != null ? money(x.amount, x.currency) + t("perMo") : t("noPlan")} · ${t("leaves", { d: fd(x.churnsAt) })}`))))] : null];
+  }
+  app.append(h("div", { class: "grid" }, card(t("growthChart"), growthBody), card(t("riskTitle"), riskBody)));
+
+  // ---- Renewals + plan mix --------------------------------------------------
+  let renewBody;
+  const RN = S.renewals;
+  if (!RN) renewBody = nd(why || t("why_billing"));
+  else {
+    renewBody = [
+      barChart(RN.buckets.map((b) => ({ label: fd(b.start), tip: `${fd(b.start)} – ${fd(b.end)} · ${moneyList(b.amount) || "—"}` })),
+        [{ name: t("renewals"), color: "var(--s1)", values: RN.buckets.map((b) => b.count) }], t("renewTitle")),
+      h("p", { class: "meta" }, t("renewTotal", { n: nf.format(RN.total.count), v: moneyList(RN.total.amount) || "—" })),
+      table(L[lang].thRenew, RN.buckets.map((b) => [`${fd(b.start)} – ${fd(b.end)}`, nf.format(b.count), moneyList(b.amount) || "—"]), [1]),
+      h("div", { class: "k" }, t("annualTitle")),
+      RN.annual.length ? h("ul", { class: "list" }, RN.annual.slice(0, 12).map((a) => h("li", null, a.name, a.stale ? h("span", { class: "chip warn", style: "margin-left:6px" }, t("stale")) : null,
+        h("div", { class: "meta" }, `${money(a.amount, a.currency)} · ${t("renewsOn", { d: fd(a.renewsAt) })} · ${a.lastActiveAt ? t("online", { d: fd(a.lastActiveAt) }) : t("neverOnline")}`)))) : none(),
+    ];
+  }
+  let mixBody;
+  if (!S.mix) mixBody = nd(why || t("why_billing"));
+  else {
+    const MX = S.mix;
+    mixBody = [hbars(["monthly", "annual", "oneTime", "free", "trial", "noData"].filter((k) => !(S.windowed && k === "noData")).map((k) => ({ label: t(k), count: MX[k] })))];
+    if (S.tiers && Object.keys(S.tiers).length) mixBody.push(h("div", { class: "k" }, t("tiersTitle")), hbars(Object.keys(S.tiers).sort((a, b) => S.tiers[b] - S.tiers[a]).map((k) => ({ label: k, count: S.tiers[k] }))));
+  }
+  app.append(h("div", { class: "grid" }, card(t("renewTitle"), renewBody), card(t("mixTitle"), mixBody)));
+
+  // ---- Sources, affiliates, LTV ---------------------------------------------
+  const srcLabel = (k) => (k.startsWith("external:") ? k.slice(9) : L.en[k] ? t(k) : k);
+  let srcBody;
+  if (!S.sources) srcBody = nd(why);
+  else if (!S.sources.length) srcBody = none();
+  else {
+    const maxJ = Math.max(1, ...S.sources.map((x) => x.joins));
+    srcBody = table(L[lang].thSrc.map((x) => x.replace("{c}", pc || "—")), S.sources.map((x) => [
+      srcLabel(x.key), h("span", null, nf.format(x.joins), h("div", { class: "cellbar", style: `width:${(x.joins / maxJ) * 100}%` })),
+      x.retention == null ? "—" : `${nf.format(x.stillIn)} · ${pf.format(x.retention)}`, x.avgLtv == null ? "—" : amt(x.avgLtv)]), [2, 3]);
+  }
+  const affBody = !S.affiliates ? nd(why) : S.affiliates.length
+    ? h("ul", { class: "list" }, S.affiliates.map((a) => h("li", null, a.name, h("div", { class: "meta" }, t("affLine", { j: nf.format(a.joins), s: nf.format(a.stillIn) }))))) : none();
+  const LT = S.ltv;
+  const ltvBody = !LT ? nd(why || t("why_billing")) : h("div", null,
+    h("div", { class: "stat" }, h("div", { class: "l" }, t("ltvChurned", { n: S.windowDays, k: nf.format(LT.churnedCount) })), h("div", { class: "n" }, moneyList(LT.churned) || t("nodata"))),
+    h("div", { class: "stat", style: "margin-top:10px" }, h("div", { class: "l" }, t("ltvPayers")), h("div", { class: "n" }, moneyList(LT.payers) || t("nodata"))));
+  app.append(h("div", { class: "grid" }, card(t("srcTitle", { n: S.windowDays }), srcBody),
+    h("section", { class: "card" }, h("h2", null, t("affTitle", { n: S.windowDays })), affBody, h("h2", { style: "margin-top:18px" }, t("ltvTitle")), ltvBody)));
+
+  // ---- Cohorts + engagement -------------------------------------------------
+  const monthName = (ym) => new Date(`${ym}-01T00:00:00Z`).toLocaleDateString(lang, { month: "long", year: "numeric", timeZone: "UTC" });
+  const cohortBody = !S.cohorts ? nd(why) : !S.cohorts.length ? none() : table(L[lang].thCohort, S.cohorts.map((c) => [
+    c.inProgress ? `${monthName(c.month)} (${t("inProgress")})` : monthName(c.month), nf.format(c.joined), nf.format(c.stillIn),
+    c.retention == null ? "—" : h("span", null, pf.format(c.retention), h("div", { class: "cellbar", style: `width:${c.retention * 100}%` }))]), [1, 2]);
+  const E = S.engagement;
+  const engBody = !E ? nd(t("why_windowed")) : [
+    h("div", { class: "split" },
+      h("div", { class: "stat" }, h("div", { class: "l" }, t("online7")), h("div", { class: "n" }, pf.format(E.online7))),
+      h("div", { class: "stat" }, h("div", { class: "l" }, t("online30")), h("div", { class: "n" }, pf.format(E.online30))),
+      h("div", { class: "stat" }, h("div", { class: "l" }, t("noPosts")), h("div", { class: "n" }, pf.format(E.noPosts)))),
+    h("div", { class: "k" }, t("levels")),
+    barChart(E.levels.map((_, i) => ({ label: String(i + 1), tip: t("level", { n: i + 1 }) })), [{ name: t("levels"), color: "var(--s1)", values: E.levels }], t("levels")),
+  ];
+  app.append(h("div", { class: "grid" }, card(t("cohortTitle"), cohortBody), card(t("engTitle"), engBody)));
+
+  // ---- Survey themes + trend ------------------------------------------------
+  const themes = (DATA.surveyThemes || []).slice(0, 6);
+  const surveyBody = themes.length ? h("ul", { class: "list" }, themes.map((th) => h("li", null, h("strong", null, th.name), h("span", { class: "meta" }, ` · ${nf.format(th.count || 0)} ${t("answers")}`),
+    (th.quotes || []).slice(0, 2).map((q) => h("blockquote", null, q))))) : nd(S.admin ? null : t("why_admin"));
+  const trendBody = [];
+  if ((DATA.history || []).length >= 2 || S.trend.length >= 3) {
+    const mp = pc ? S.trend.filter((x) => x.mrr && typeof x.mrr[pc] === "number").map((x) => ({ date: x.date, value: x.mrr[pc] })) : [];
+    const ap = S.trend.filter((x) => typeof x.active === "number").map((x) => ({ date: x.date, value: x.active }));
+    if (mp.length >= 2) trendBody.push(h("div", { class: "k" }, t("trendMrr", { c: pc })), lineChart(mp, (v) => money(v, pc), t("trendMrr", { c: pc })));
+    if (ap.length >= 2) trendBody.push(h("div", { class: "k" }, t("trendActive")), lineChart(ap, (v) => nf.format(v), t("trendActive")));
+  }
+  if (!trendBody.length) trendBody.push(h("p", { class: "meta" }, t("noHistory")));
+  app.append(h("div", { class: "grid" }, card(t("surveyTitle"), surveyBody), card(t("trendTitle"), trendBody)));
+
+  // ---- Footer ---------------------------------------------------------------
+  const notes = [];
+  if (S.admin) notes.push(t("estimate"));
+  for (const x of M.notes || []) notes.push(x);
+  notes.push("MySkool · myskool.xyz");
+  app.append(h("p", { class: "note" }, notes.join(" · ")));
+
+  for (const [box, draw] of charts) draw(box);
+  if (window.ResizeObserver) {
+    for (const [box, draw] of charts) { let last = box.clientWidth; new ResizeObserver(() => { if (box.clientWidth !== last) { last = box.clientWidth; draw(box); } }).observe(box); }
+  }
+})();
+</script>
+</body>
+</html>

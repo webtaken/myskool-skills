@@ -38,8 +38,16 @@ Suggested cadence:
 | urgent-radar | `7 * * * *` (hourly) | blockers and cancel intent can't wait |
 | answer-desk | `15 9,15,21 * * *` | three sweeps a day |
 | inbox-concierge | `30 9,18 * * *` | twice a day |
+| daily-brief | `0 8 * * *` | the morning overview, before anything else |
 | welcome-intros | `0 10 * * *` | daily |
+| save-desk | `0 10 * * *` | payment failures and cancellations have days, not weeks |
 | pulse / churn-signals / wins-amplifier / weekly-digest | `0 9 * * 1` | weekly, Monday morning |
+| activation-coach | `0 11 * * 1` | weekly, after the Monday reports |
+| growth-dashboard | `0 9 1 * *` | monthly (or weekly, `0 9 * * 1`) |
+
+Member skills on a schedule need a key/connector with `members:read` (and
+`dms:read` for the inbox parts) — still no write scopes. Their scheduled
+deliveries carry first names and totals only (`references/untrusted-content.md`).
 
 ## claude.ai, ChatGPT, Cowork
 

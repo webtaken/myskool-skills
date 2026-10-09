@@ -2,7 +2,7 @@
 name: myskool-answer-desk
 description: Finds questions in a Skool community that nobody from the creator's team has answered yet and drafts replies in the creator's voice, grounded in a community FAQ it builds from past answered threads; publishes only the replies the creator approves. Use when a Skool creator asks to answer unanswered questions, "responder las dudas de la comunidad", "who is waiting for an answer", "qué preguntas siguen sin respuesta", build or update the community FAQ, or automate replies to member doubts. Not for private DMs (use myskool-inbox-concierge) or outages and cancellations (use myskool-urgent-radar).
 license: MIT
-compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. Publishing replies needs the comments:write scope.
+compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. Publishing replies needs the comments:write scope; the FAQ post needs posts:write.
 ---
 
 # Answer desk
