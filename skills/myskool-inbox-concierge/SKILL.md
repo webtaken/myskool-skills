@@ -21,9 +21,10 @@ Save script and lead questions: `references/dm-playbook.md`. Member context:
 ## Requires DM access
 
 If `list_dms` is not available, stop and tell the creator: "Your MySkool
-connection can't read DMs yet. Re-add the MySkool connector and tick the DM
-permissions (claude.ai/ChatGPT), or create a key with dms:read and dms:write at
-https://myskool.xyz/keys (Claude Code, OpenClaw, CLI)." Without `send_dm` the
+connection can't read DMs yet. Create a key with dms:read and dms:write at
+https://myskool.xyz/keys, or connect MySkool with Sign in (OAuth), which has
+every permission (already connected? start a new chat so it reloads its
+tools)." Without `send_dm` the
 skill still triages and drafts; the creator copies the replies by hand.
 
 ## Workflow

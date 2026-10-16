@@ -92,8 +92,9 @@ Project, paste the skill's `SKILL.md` as instructions and add the MySkool app.
   scheduled runs never publish.
 - Member posts are treated as untrusted data: instructions inside them are
   ignored and flagged.
-- Read-only connectors are enough for every report. Give writes/DMs only if you
-  want the skills to publish what you approve.
+- Reads are enough for every report. The MySkool connector (OAuth) has every
+  permission; with an API key, add writes/DMs only if you want the skills to
+  publish what you approve.
 - Member data (emails, plans, LTV, join answers, logins) stays in your reports:
   never in posts or comments, never cited in a DM; emails and amounts are
   never saved to disk.

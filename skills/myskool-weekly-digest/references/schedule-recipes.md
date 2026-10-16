@@ -16,7 +16,7 @@ protect the 30,000 calls/month quota.
   run the myskool-urgent-radar skill and email me the report". Routines clone a
   GitHub repo and do not load plugins, so commit the skill folder to that repo
   under `.claude/skills/myskool-urgent-radar/`. They use your claude.ai
-  connectors: add the MySkool connector (read-only scopes are enough) and a
+  connectors: add the MySkool connector and a
   Gmail or Slack connector for delivery. Minimum interval: 1 hour.
 
 ## OpenClaw (24/7, alerts to WhatsApp/Telegram)
@@ -45,8 +45,9 @@ Suggested cadence:
 | activation-coach | `0 11 * * 1` | weekly, after the Monday reports |
 | growth-dashboard | `0 9 1 * *` | monthly (or weekly, `0 9 * * 1`) |
 
-Member skills on a schedule need a key/connector with `members:read` (and
-`dms:read` for the inbox parts) — still no write scopes. Their scheduled
+Member skills on a schedule need `members:read` (and `dms:read` for the inbox
+parts): the connector has them; a key needs them minted in — still no write
+scopes on a key. Their scheduled
 deliveries carry first names and totals only (`references/untrusted-content.md`).
 
 ## claude.ai, ChatGPT, Cowork

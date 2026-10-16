@@ -100,13 +100,15 @@ Group ids are 32-char hex from `list_groups`, never the slug in the URL.
 
 ## Missing tools = missing scopes
 
-Reads are always on. Writes (`create_post`, `create_comment`), DMs
-(`list_dms`, `get_dm`, `send_dm`) and members (`list_members`, `get_member`,
-scope `members:read`) only appear when the creator granted those scopes. If a
-step needs one that is missing, keep going with what you have and tell the
-creator once: "To enable <writes/DMs/members>, re-add the MySkool connector and
-tick <scope> (claude.ai/ChatGPT), or create a key with that scope at
-https://myskool.xyz/keys (Claude Code, OpenClaw, CLI)."
+Reads are always on. MySkool connectors (OAuth: claude.ai, ChatGPT, Claude
+Code…) get every tool. With an API key, writes (`create_post`,
+`create_comment`), DMs (`list_dms`, `get_dm`, `send_dm`) and members
+(`list_members`, `get_member`, scope `members:read`) only appear when the key
+was minted with those scopes. If a step needs one that is missing, keep going
+with what you have and tell the creator once: "To enable <writes/DMs/members>,
+create a key with <scope> at https://myskool.xyz/keys, or connect MySkool with
+Sign in (OAuth) instead, which has every permission. If you already use the
+connector, start a new chat so it reloads its tools."
 
 ## Data quirks
 

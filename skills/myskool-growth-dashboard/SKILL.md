@@ -113,7 +113,7 @@ Action: run myskool-save-desk today for the 13 failed payments.
 ## Scheduling
 
 Monthly, the 1st at 9:00 (`0 9 1 * *`), or weekly (`0 9 * * 1`). See
-`references/schedule-recipes.md`. Use a read-only key or connector with
+`references/schedule-recipes.md`. Use a read-only key with
 `members:read`. Scheduled runs deliver only the six-line summary with totals.
 
 ## Examples

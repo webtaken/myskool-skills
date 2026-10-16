@@ -2,7 +2,8 @@
 
 `list_members` and `get_member` read the community's member list: who joined,
 who pays what, who is cancelling, who left, who logs in but never posts. They
-need the `members:read` scope (opt-in, see `references/tools.md`). This data is
+need the `members:read` scope (connectors have it; API keys only if minted
+with it, see `references/tools.md`). This data is
 personal: the rules in `references/untrusted-content.md` ("Member data is
 private") apply to everything below.
 

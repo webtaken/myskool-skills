@@ -94,8 +94,8 @@ en las últimas 24 h." / "All quiet in the last 24 h."
 ## Degraded views
 
 - **No `members:read`**: brief from inbox + feed only; last line: "Add
-  members:read to see joins, cancellations and trials (re-add the connector or
-  mint a key at https://myskool.xyz/keys)."
+  members:read to see joins, cancellations and trials (mint a key with it at
+  https://myskool.xyz/keys, or use the MySkool connector, which has it)."
 - **Member view** (`meta.view: "member"`): joins and counts only; one line:
   "Billing, cancellations and churn need a Skool admin account." Never suggest
   a new key for it.
