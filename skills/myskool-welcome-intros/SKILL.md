@@ -63,7 +63,8 @@ Config: `references/config.md`. Member list: `references/members.md`.
    drafts may start the same way.
 8. **Optional DM.** Only if the creator asked for it or `config.welcomeDm` is
    true, and `send_dm` exists: one short DM per newcomer that adds something
-   the comment didn't (an invitation to the next live call, a direct
+   the comment didn't (an invitation to the next live call from
+   `list_events` — `startLocal`, `timezone` and its `url` — or a direct
    question). Members who joined without an intro get the "no intro yet" DM
    from `references/welcome-templates.md` (their join answer can set the
    hook). Each DM is approved by number, follows the "Proactive DMs" rules in

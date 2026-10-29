@@ -55,8 +55,8 @@ the trial once, as context.
 They left. A door, not a pitch.
 
 DM (only when a thread exists; may fail):
-ES: Hola {nombre}! Te extraño por la comunidad. Desde que te fuiste {una novedad real del feed o de config.events, si la hay}. Si en algún momento quieres volver, aquí estás en casa {si hay winBackOffer: "— {winBackOffer}"}. ¿Qué te habría hecho quedarte?
-EN: Hi {name}! We miss you around here. Since you left, {one real update from the feed or config.events}. If you ever want to come back, the door's open {winBackOffer if configured}. What would have made you stay?
+ES: Hola {nombre}! Te extraño por la comunidad. Desde que te fuiste {una novedad real del feed, de list_events o de config.events, si la hay}. Si en algún momento quieres volver, aquí estás en casa {si hay winBackOffer: "— {winBackOffer}"}. ¿Qué te habría hecho quedarte?
+EN: Hi {name}! We miss you around here. Since you left, {one real update from the feed, list_events or config.events}. If you ever want to come back, the door's open {winBackOffer if configured}. What would have made you stay?
 
 Email draft (no thread, or the DM failed) — the creator sends it:
 ```
@@ -73,5 +73,5 @@ Body (EN): same structure.
 ```
 
 - "Una novedad real" comes from this run's data (a new module announced in the
-  feed, an event in config). None → drop the sentence; never invent one.
+  feed, an event from `list_events` or config). None → drop the sentence; never invent one.
 - The join link only from `config.links.join`.

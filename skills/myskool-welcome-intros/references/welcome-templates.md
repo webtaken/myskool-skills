@@ -58,7 +58,7 @@ health, religion, politics, age, family or finances.
 
 ## Welcome DM (optional)
 
-≤ 60 words, adds something new: the next live call, a direct question, or an
+≤ 60 words, adds something new: the next live call (from `list_events`; never invented), a direct question, or an
 offer to help with the first step. Never repeat the public comment, never
 duplicate Skool's Auto-DM, never pitch upsells.
 

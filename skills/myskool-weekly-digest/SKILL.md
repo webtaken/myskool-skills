@@ -22,10 +22,14 @@ Format and examples: `references/digest-format.md`.
 1. **Setup.** Load config or bootstrap it (group, creator, team, voice,
    links). Load `.myskool/state/weekly-digest.json` (threads featured in past
    digests) if a filesystem exists.
-2. **Upcoming events.** Take calls/events for the next 7 days from config
-   (`events` if present, `links.calendar`). If there are none, ask the creator
-   once: "Any calls or events next week? (day, time, timezone, link)". No
-   answer → leave the section out. Never invent dates, times or links.
+2. **Upcoming events.** `list_events {groupId, to: <now + 7 days>}` → the
+   creator's Skool calendar for the next 7 days: use `startLocal` + `timezone`,
+   `title` and the event `url` (or `location.url`). Skip events members can't
+   see (`access` other than everyone) unless the digest is for that audience.
+   Add config `events` that are not already on the calendar. If the tool is
+   missing and there is no config, ask the creator once: "Any calls or events
+   next week? (day, time, timezone, link)". Nothing → leave the section out.
+   Never invent dates, times or links.
 3. **Gather the week** (budget ~10–30 calls, one at a time):
    - `list_posts {sort: "best-1w", pages: 1}` → top-thread candidates.
    - `list_posts {sort: "newest", since: "7d", pages: 10}` → everything

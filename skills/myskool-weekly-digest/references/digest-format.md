@@ -24,7 +24,7 @@ the community's language. Target ≤ 250 words.
 - <first name> pregunta <topic> → <link>  (×1–2)
 
 📅 Esta semana
-- <day, time, timezone>: <event> → <link>  (only from config / creator)
+- <day, time, timezone>: <event> → <link>  (only from list_events, config or the creator)
 
 👋 Bienvenidos a los <N> nuevos: <up to 5 first names>. Preséntate aquí → <link>
 

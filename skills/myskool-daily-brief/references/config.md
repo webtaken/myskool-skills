@@ -58,7 +58,9 @@ Never store API keys or tokens in it.
 Every field is optional. Only ask for what the current skill needs.
 `cancelHowTo`, `saveOffers`, `billingUpdateHowTo`, `trialOffer`,
 `winBackOffer`, `events` and every link must come from the creator — never
-fill them from memory of how Skool works.
+fill them from memory of how Skool works. Upcoming calls come from the Skool
+calendar (`list_events`) when that tool exists; `events` is only for calls the
+creator runs outside the Skool calendar.
 
 ## First run (bootstrap)
 

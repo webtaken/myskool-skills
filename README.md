@@ -1,7 +1,7 @@
 # MySkool skills — a retention co-pilot for Skool creators
 
 Twelve agent skills that read your Skool community through
-[MySkool](https://myskool.xyz) — feed, comments, inbox and member list — and
+[MySkool](https://myskool.xyz) — feed, comments, inbox, member list and calendar — and
 help you keep members across the whole lifecycle: start the day with a brief,
 catch members who are blocked, answer what nobody answered, welcome newcomers
 and get them started, spot who is about to leave, save failed payments and
@@ -27,7 +27,7 @@ approval**: every skill drafts first and only posts or DMs what you say
 | `myskool-welcome-intros` | Personal welcome for every intro post + links to similar members; DM for who joined without one | daily |
 | `myskool-wins-amplifier` | Congratulate wins, weekly Wins Wall, testimonials | weekly |
 | `myskool-inbox-concierge` | DM triage: support, cancel intent, leads, spam | 2×/day |
-| `myskool-weekly-digest` | Member-facing weekly recap + engagement prompts | weekly |
+| `myskool-weekly-digest` | Member-facing weekly recap (with next week's calls from your Skool calendar) + engagement prompts | weekly |
 
 ## Requirements
 

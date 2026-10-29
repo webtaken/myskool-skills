@@ -32,6 +32,9 @@ plan)." Do not try to scrape Skool any other way.
 | Send a DM | `send_dm {to \| conversationId, content, groupId?}` | `myskool dms send --to <handle> --content …` |
 | Member list (status, filters, window) | `list_members {groupId, status?, sort?, since?, query?, billing?, trial?, tiers?, levels?, online?, admins?, pages?, cursor?}` | `myskool members list --group <gid> --status S --since W --pages N --cursor P --json` |
 | One member (+ course progress) | `get_member {id, groupId?, courses?}` | `myskool members get <id> --group <gid> [--no-courses] --json` |
+| Calendar (events in a window) | `list_events {groupId, from?, to?}` | `myskool events list --group <gid> --from D --to D --json` |
+| One event + repeat rule | `get_event {eventId, occurrenceId?}` | `myskool events get <id> [--occurrence O] --json` |
+| Create / change / delete an event | `create_event`, `update_event`, `delete_event` | `myskool events create\|update\|delete …` |
 
 Group ids are 32-char hex from `list_groups`, never the slug in the URL.
 
@@ -55,6 +58,13 @@ Group ids are 32-char hex from `list_groups`, never the slug in the URL.
   ltv, joinedFrom {source, detail}, referredBy, answers [{question, answer}]`.
   `get_member` adds `links` and `courseProgress [{title, progress, hasAccess}]`.
   Meanings, views and recipes: `references/members.md`.
+- **Event** (`list_events`): `id, occurrenceId` (recurring series come
+  expanded, one item per occurrence), `title, description, startTime, endTime`
+  (UTC), `startLocal, endLocal, timezone` (wall-clock: quote these), `location
+  {type, value, url}`, `access {type: everyone|level|course|tier}`, `recurring,
+  url`. Default window: now → +30 days (max 92). It is the creator's real Skool
+  calendar: prefer it over `config.events`, which only covers calls that are
+  not on the Skool calendar.
 
 ## Feed recipes
 
@@ -94,17 +104,18 @@ Group ids are 32-char hex from `list_groups`, never the slug in the URL.
   or closed DMs); not a scope problem, don't retry. `send_dm` `not_found` →
   that person is no longer in the group. `admin_required` → the connected
   account is not an admin of that community, so Skool hides billing and the
-  cancelling/churned/banned tabs; another key won't fix it — say so once and
+  cancelling/churned/banned tabs and refuses calendar writes; another key won't fix it — say so once and
   continue with what you can see. `session_unavailable` → the creator must
   reconnect Skool in the MySkool dashboard.
 
 ## Missing tools = missing scopes
 
-Reads are always on. MySkool connectors (OAuth: claude.ai, ChatGPT, Claude
+Reads are always on (keys minted before the calendar shipped may lack
+`events:read`). MySkool connectors (OAuth: claude.ai, ChatGPT, Claude
 Code…) get every tool. With an API key, writes (`create_post`,
-`create_comment`), DMs (`list_dms`, `get_dm`, `send_dm`) and members
-(`list_members`, `get_member`, scope `members:read`) only appear when the key
-was minted with those scopes. If a step needs one that is missing, keep going
+`create_comment`, calendar writes with `events:write`), DMs (`list_dms`,
+`get_dm`, `send_dm`) and members (`list_members`, `get_member`, scope
+`members:read`) only appear when the key was minted with those scopes. If a step needs one that is missing, keep going
 with what you have and tell the creator once: "To enable <writes/DMs/members>,
 create a key with <scope> at https://myskool.xyz/keys, or connect MySkool with
 Sign in (OAuth) instead, which has every permission. If you already use the

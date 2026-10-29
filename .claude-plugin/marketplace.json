@@ -5,15 +5,15 @@
     "url": "https://myskool.xyz"
   },
   "metadata": {
-    "description": "Retention co-pilot for Skool community creators: daily brief, urgent-post radar, answer desk, inbox concierge, community pulse, churn signals, save desk, activation coach, growth dashboard, welcome intros, wins and weekly digest — on top of the MySkool API.",
-    "version": "0.2.1"
+    "description": "Retention co-pilot for Skool community creators: daily brief, urgent-post radar, answer desk, inbox concierge, community pulse, churn signals, save desk, activation coach, growth dashboard, welcome intros, wins and weekly digest (with the live Skool calendar) — on top of the MySkool API.",
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "myskool",
       "source": "./",
-      "description": "Retention co-pilot for Skool community creators: daily brief, urgent-post radar, answer desk, inbox concierge, community pulse, churn signals, save desk, activation coach, growth dashboard, welcome intros, wins and weekly digest — on top of the MySkool API.",
-      "version": "0.2.1",
+      "description": "Retention co-pilot for Skool community creators: daily brief, urgent-post radar, answer desk, inbox concierge, community pulse, churn signals, save desk, activation coach, growth dashboard, welcome intros, wins and weekly digest (with the live Skool calendar) — on top of the MySkool API.",
+      "version": "0.3.0",
       "category": "productivity",
       "homepage": "https://myskool.xyz/docs/skills"
     }

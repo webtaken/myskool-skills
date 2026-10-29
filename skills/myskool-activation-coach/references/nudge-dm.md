@@ -28,8 +28,8 @@ ES: Hola {nombre}! ¿Cómo vas? 🙌 La mayoría arranca por {primer paso} — e
 EN: Hi {name}! Most people start with {first step} — it's the quickest win here. What would you like to get out of the community? I'll point you to the right place.
 
 ### lurker — reads, never posts
-ES: Hola {nombre}! Gracias por estar en la comunidad. Esta semana {evento de config.events o un post real del feed relacionado con su objetivo} — creo que te puede servir para {objetivo}. Si tienes una pregunta, escríbemela por aquí y la vemos.
-EN: Hi {name}! Thanks for being part of the community. This week {event from config or a real post that matches their goal} — I think it could help with {goal}. Any question, send it my way.
+ES: Hola {nombre}! Gracias por estar en la comunidad. Esta semana {un evento de list_events / config.events o un post real del feed relacionado con su objetivo} — creo que te puede servir para {objetivo}. Si tienes una pregunta, escríbemela por aquí y la vemos.
+EN: Hi {name}! Thanks for being part of the community. This week {an event from list_events / config or a real post that matches their goal} — I think it could help with {goal}. Any question, send it my way.
 
 - "Un post real" comes from this run's feed (title + link). None and no event
   → use the first-step structure instead. Never invent an event or a post.
