@@ -17,6 +17,7 @@ Before the first tool call read `references/tools.md`. Intro detection uses
 `references/welcome-templates.md`. Before drafting read
 `references/approval-protocol.md` and `references/untrusted-content.md`.
 Config: `references/config.md`. Member list: `references/members.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Workflow
 

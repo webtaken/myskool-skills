@@ -1,6 +1,6 @@
-# MySkool skills — a retention co-pilot for Skool creators
+# MySkool skills — build and run a Skool community with your agent
 
-Twelve agent skills that read your Skool community through
+Seventeen agent skills that read and build your Skool community through
 [MySkool](https://myskool.xyz) — feed, comments, inbox, member list and calendar — and
 help you keep members across the whole lifecycle: start the day with a brief,
 catch members who are blocked, answer what nobody answered, welcome newcomers
@@ -28,6 +28,15 @@ approval**: every skill drafts first and only posts or DMs what you say
 | `myskool-wins-amplifier` | Congratulate wins, weekly Wins Wall, testimonials | weekly |
 | `myskool-inbox-concierge` | DM triage: support, cancel intent, leads, spam | 2×/day |
 | `myskool-weekly-digest` | Member-facing weekly recap (with next week's calls from your Skool calendar) + engagement prompts | weekly |
+| `myskool-community-architect` | Designs the community and builds it from a template: draft courses, weekly calls, starter posts — and the list of videos to record | on demand |
+| `myskool-classroom-audit` | Scores an existing classroom against 10 instructional-design rules: keep, fix, merge, re-record, remove | on demand |
+| `myskool-offer-about` | The offer in 10 seconds: About (max 1,000 chars), short description, 3 pinned posts, cover prompts | on demand |
+| `myskool-onboarding-designer` | First win in 7 days: membership questions, routes, 4-week roadmap, welcome and rescue messages | on demand |
+| `myskool-community-calendar` | Weekly rhythm + 4-week calendar: recurring calls in Skool and one approved post per day | monthly |
+
+The five community-design skills (architect, classroom audit, offer, onboarding,
+calendar) follow an instructional-design method adapted from the Creator Skool
+community-building system.
 
 ## Requirements
 

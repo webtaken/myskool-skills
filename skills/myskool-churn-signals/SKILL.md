@@ -18,6 +18,7 @@ Before the first tool call read `references/tools.md`. Labels come from
 from `references/rescue-dm.md`. Before drafting read
 `references/approval-protocol.md` and `references/untrusted-content.md`.
 Config and history: `references/config.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## What it can and can't see
 

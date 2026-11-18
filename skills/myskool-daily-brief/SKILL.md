@@ -18,6 +18,7 @@ host) and `references/members.md` (views, recipes, money math). Labels come
 from `references/taxonomy.md` (urgency and the lifecycle owner table). Member
 data rules: `references/untrusted-content.md`. Config and state:
 `references/config.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Window
 

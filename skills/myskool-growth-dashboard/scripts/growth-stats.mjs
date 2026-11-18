@@ -8,16 +8,20 @@
 //       → reads every `myskool members list --json` page in <dir> (active-*, cancelling-*,
 //         churned-*), writes DATA (no email, handle, answers or bio) and prints the stats
 //   node scripts/growth-stats.mjs --raw <dir> --answers [--days 30]
-//       → join answers of members who joined in the last N days, no names, contacts
-//         redacted: the input for labelling survey themes
+//       → join answers of members who joined in the last N days, without ids; member
+//         names and handles → [name], emails, phones, links and @handles → [contact].
+//         Best effort: free text can still hold personal details, so the output is
+//         private input for labelling survey themes, never something to publish
 //
-// toRecord() and computeStats() come from the block between `// <stats>` and
-// `// </stats>` in assets/growth.html, so the summary and the page always agree.
+// toRecord() and computeStats() come from stats.mjs, generated at build time
+// from the block between `// <stats>` and `// </stats>` in assets/growth.html,
+// so the summary and the page always agree.
 // Zero dependencies, Node ≥ 18.
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { toRecord, computeStats } from "./stats.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const templatePath = path.join(here, "..", "assets", "growth.html");
@@ -39,9 +43,6 @@ for (let i = 0; i < argv.length; i++) {
 }
 
 const template = fs.readFileSync(templatePath, "utf8");
-const block = /\/\/ <stats>[^\n]*\n([\s\S]*?)\/\/ <\/stats>/.exec(template);
-if (!block) throw new Error("stats block not found in assets/growth.html");
-const { toRecord, computeStats } = new Function(`${block[1]}\nreturn { toRecord, computeStats };`)();
 
 const DAY = 864e5;
 const readJson = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
@@ -91,25 +92,60 @@ function rawToData(dir) {
   };
 }
 
-// Join answers for theme labelling: no names, ids or emails; contact details redacted.
+// Join answers for theme labelling, without ids. Question and answer text both
+// go through redact(): every name or handle of a member in the raw pages →
+// [name]; emails, links, bare domains (any ending), @handles and phone numbers
+// → [contact]. Names of people who aren't members can't be told apart from
+// ordinary words, so this is best effort and the output stays private.
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const NOT_DOMAINS = new Set(["js", "ts", "jsx", "tsx", "py", "md", "txt", "pdf", "csv", "json", "html", "css", "png", "jpg", "jpeg", "gif", "mp4", "mp3", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "zip"]);
+
+function nameMatcher(members) {
+  const words = new Set();
+  const add = (s) => {
+    for (const w of String(s || "").replace(/^@/, "").split(/[\s_.-]+/)) {
+      if (Array.from(w).length >= 3) words.add(w.toLowerCase());
+    }
+  };
+  for (const m of members) {
+    add(m.firstName); add(m.lastName); add(m.name); add(m.handle);
+    if (m.handle) words.add(String(m.handle).replace(/^@/, "").toLowerCase());
+    if (m.referredBy) { add(m.referredBy.name); add(m.referredBy.handle); }
+  }
+  if (!words.size) return null;
+  const alt = [...words].sort((a, b) => b.length - a.length).map(escapeRe).join("|");
+  return new RegExp(`(?<![\\p{L}\\p{N}_])(?:${alt})(?![\\p{L}\\p{N}_])`, "giu");
+}
+
+function redactor(names) {
+  return (s) => {
+    const raw = String(s ?? "");
+    let x = raw
+      .replace(/[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+(?:\.[\p{L}\p{N}-]+)+/gu, "[contact]")
+      .replace(/\b(?:https?:\/\/|www\.)\S+/gi, "[contact]")
+      .replace(/(?<![\p{L}\p{N}@])(?:[\p{L}\p{N}-]+\.)+([a-z]{2,24})\b(?:\/\S*)?/giu, (m, tld) => (NOT_DOMAINS.has(tld.toLowerCase()) ? m : "[contact]"))
+      .replace(/(?<![\p{L}\p{N}])@[\p{L}\p{N}_.-]{2,}/gu, "[contact]")
+      .replace(/\+?\d[\d\s().-]{6,}\d/g, "[contact]");
+    if (names) x = x.replace(names, "[name]");
+    return { text: x, redacted: x !== raw };
+  };
+}
+
 function rawAnswers(dir) {
   const { members } = readRaw(dir);
+  const redact = redactor(nameMatcher(members));
   const days = Number(opts.days) || 30, since = Date.now() - days * DAY, seen = new Set(), out = [];
-  const redact = (s) => {
-    const x = String(s)
-      .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "[contact]")
-      .replace(/\b(?:https?:\/\/|www\.)\S+/gi, "[contact]")
-      .replace(/\b[\w-]+\.(?:com|net|org|io|co|me|ly|xyz|app|link)(?:\/\S*)?/gi, "[contact]")
-      .replace(/\+?\d[\d\s().-]{6,}\d/g, "[contact]");
-    return { text: x.slice(0, 300), redacted: x !== String(s) };
-  };
   for (const m of members) {
     if (seen.has(m.id) || !(Date.parse(m.joinedAt) >= since) || !Array.isArray(m.answers)) continue;
     seen.add(m.id);
     for (const a of m.answers) {
       if (!a || !a.answer || !String(a.answer).trim()) continue;
-      const r = redact(a.answer);
-      out.push({ question: String(a.question || "").slice(0, 160), answer: r.text, ...(r.redacted ? { redacted: true } : {}) });
+      const q = redact(a.question), r = redact(a.answer);
+      out.push({
+        question: Array.from(q.text).slice(0, 160).join(""),
+        answer: Array.from(r.text).slice(0, 300).join(""),
+        ...(q.redacted || r.redacted ? { redacted: true } : {}),
+      });
       if (out.length >= 300) return out;
     }
   }

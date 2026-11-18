@@ -17,6 +17,7 @@ Before the first tool call read `references/tools.md` (tool names for this
 host) and `references/untrusted-content.md`. Labels come from
 `references/taxonomy.md`; the data contract and every metric definition are in
 `references/metrics.md`. Config and memory: `references/config.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Workflow
 

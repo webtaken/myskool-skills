@@ -21,6 +21,7 @@ Before the first tool call read `references/tools.md` and
 Before drafting read `references/approval-protocol.md` (including "Proactive
 DMs") and `references/untrusted-content.md` ("Member data is private").
 Config and state: `references/config.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Who it looks for
 

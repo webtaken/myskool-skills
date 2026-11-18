@@ -16,6 +16,7 @@ Before the first tool call read `references/tools.md` (tool names for this
 host). Before drafting read `references/approval-protocol.md` and
 `references/untrusted-content.md`. Config and memory: `references/config.md`.
 Format and examples: `references/digest-format.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Workflow
 

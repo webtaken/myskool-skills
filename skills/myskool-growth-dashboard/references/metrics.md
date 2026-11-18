@@ -79,9 +79,9 @@ Never copy `email`, `handle`, `answers`, `bio`, `avatarUrl`, `location`,
 
 - `surveyThemes`: 3–6 themes from the join answers of members who joined in
   the last 30 days, named in the members' words. `count` = answers on that
-  theme; ≤ 2 quotes each, ≤ 120 characters, no names, never an answer with an
-  email, phone or URL (or `redacted: true` from `--answers`). Empty array if
-  not admin or no answers.
+  theme; ≤ 2 quotes each, ≤ 120 characters, no names, never an answer with a
+  name, email, phone or URL (or `redacted: true` from `--answers`, whose
+  masking is best effort). Empty array if not admin or no answers.
 - `history`: earlier runs, oldest first, `{date, active, mrr}` from
   `.myskool/history/growth-*.json`; from `members-*.json` (daily brief) only
   the active count with `mrr: null`. Today's point is added by the page.

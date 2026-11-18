@@ -17,6 +17,7 @@ host). Before drafting read `references/approval-protocol.md` and
 `references/untrusted-content.md`. Config and memory: `references/config.md`.
 Save script and lead questions: `references/dm-playbook.md`. Member context:
 `references/members.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Requires DM access
 

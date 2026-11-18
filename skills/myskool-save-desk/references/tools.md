@@ -35,8 +35,24 @@ plan)." Do not try to scrape Skool any other way.
 | Calendar (events in a window) | `list_events {groupId, from?, to?}` | `myskool events list --group <gid> --from D --to D --json` |
 | One event + repeat rule | `get_event {eventId, occurrenceId?}` | `myskool events get <id> [--occurrence O] --json` |
 | Create / change / delete an event | `create_event`, `update_event`, `delete_event` | `myskool events create\|update\|delete …` |
+| Classroom courses | `list_courses {groupId}` | `myskool courses list --group <gid> --json` |
+| One course: folders + lessons | `get_course {courseId, content?}` | `myskool courses get <course-id> [--content] --json` |
+| One lesson (markdown, video, resources) | `get_lesson {courseId, lessonId}` | `myskool lessons get <lesson-id> --course <course-id> --json` |
+| Create / change courses and lessons | `create_course`, `update_course`, `create_lesson`, `update_lesson` (+ folders) | `myskool courses create\|update …`, `myskool lessons create\|update …` |
+| Community templates | `list_templates {engine?, language?}`, `get_template {slug}` | `myskool templates list --json`, `myskool templates show <slug> --json` |
+| Check a blueprint (no writes) | `validate_blueprint {groupId, template \| blueprint, options?}` | `myskool templates validate --group <gid> --file F --json` |
+| Build a community from a blueprint | `apply_blueprint {groupId, template \| blueprint, options?, resumeJobId?}` | `myskool templates apply --group <gid> --file F --yes --json` |
+| Follow a build | `get_blueprint_job {groupId, jobId}` | `myskool templates status <job-id> --group <gid> --json` |
+| Brains of the connection | `list_brains` | `myskool brain list --json` |
+| Brain index (files + link graph) | `get_brain {groupId}` | `myskool brain show --group <gid> --json` |
+| One brain file (markdown) | `read_brain_file {groupId, slug}` | `myskool brain read <slug> --group <gid> --json` |
+| Search the brain | `search_brain {groupId, query, limit?}` | `myskool brain search <query> --group <gid> --json` |
+| Write / delete a brain file | `write_brain_file {groupId, slug, content, title?, summary?, ifExists?}`, `delete_brain_file` | `myskool brain push <slug> --group <gid> --content-file F --if-exists M` / `brain rm` |
 
 Group ids are 32-char hex from `list_groups`, never the slug in the URL.
+
+The **brain** is the community's context (offer, audience, voice, curriculum,
+FAQ): load it before analysing or drafting, as `references/brain.md` says.
 
 ## Fields you will use
 
@@ -115,7 +131,7 @@ Reads are always on (keys minted before the calendar shipped may lack
 Code…) get every tool. With an API key, writes (`create_post`,
 `create_comment`, calendar writes with `events:write`), DMs (`list_dms`,
 `get_dm`, `send_dm`) and members (`list_members`, `get_member`, scope
-`members:read`) only appear when the key was minted with those scopes. If a step needs one that is missing, keep going
+`members:read`) only appear when the key was minted with those scopes; classroom writes and `apply_blueprint` need `courses:write`; brain reads are on by default and `write_brain_file` needs `brain:write`. If a step needs one that is missing, keep going
 with what you have and tell the creator once: "To enable <writes/DMs/members>,
 create a key with <scope> at https://myskool.xyz/keys, or connect MySkool with
 Sign in (OAuth) instead, which has every permission. If you already use the

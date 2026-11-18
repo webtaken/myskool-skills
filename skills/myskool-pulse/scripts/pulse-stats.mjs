@@ -4,13 +4,14 @@
 //   node scripts/pulse-stats.mjs data.json                 → prints the stats JSON
 //   node scripts/pulse-stats.mjs data.json --fill out.html → also writes the filled dashboard
 //
-// The stats come from the same computeStats() the dashboard runs (the block
-// between `// <stats>` and `// </stats>` in assets/pulse.html), so the summary
-// and the charts always agree.
+// The stats come from the same computeStats() the dashboard runs: stats.mjs is
+// generated at build time from the block between `// <stats>` and
+// `// </stats>` in assets/pulse.html, so the summary and the charts always agree.
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { computeStats } from "./stats.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const templatePath = path.join(here, "..", "assets", "pulse.html");
@@ -21,9 +22,6 @@ if (!dataPath) {
 }
 
 const template = fs.readFileSync(templatePath, "utf8");
-const block = /\/\/ <stats>[^\n]*\n([\s\S]*?)\/\/ <\/stats>/.exec(template);
-if (!block) throw new Error("computeStats block not found in assets/pulse.html");
-const computeStats = new Function(`${block[1]}\nreturn computeStats;`)();
 
 const data = JSON.parse(fs.readFileSync(dataPath, "utf8"));
 const s = computeStats(data);

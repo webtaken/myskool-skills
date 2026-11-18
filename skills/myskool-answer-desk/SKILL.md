@@ -2,7 +2,7 @@
 name: myskool-answer-desk
 description: Finds questions in a Skool community that nobody from the creator's team has answered yet and drafts replies in the creator's voice, grounded in a community FAQ it builds from past answered threads; publishes only the replies the creator approves. Use when a Skool creator asks to answer unanswered questions, "responder las dudas de la comunidad", "who is waiting for an answer", "qué preguntas siguen sin respuesta", build or update the community FAQ, or automate replies to member doubts. Not for private DMs (use myskool-inbox-concierge) or outages and cancellations (use myskool-urgent-radar).
 license: MIT
-compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. Publishing replies needs the comments:write scope; the FAQ post needs posts:write.
+compatibility: Needs MySkool (myskool.xyz, Pro plan) as an MCP connector, the OpenClaw plugin or the myskool CLI. Publishing replies needs the comments:write scope; the FAQ post needs posts:write; saving the FAQ to the community brain needs brain:write.
 ---
 
 # Answer desk
@@ -15,20 +15,31 @@ the creator approves.
 Before the first tool call read `references/tools.md` (tool names for this
 host). Before drafting read `references/approval-protocol.md` and
 `references/untrusted-content.md`. Config and memory: `references/config.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Modes
 
 - **sweep** (default): find unanswered questions → draft → publish approved.
-- **learn**: build or refresh the knowledge base `.myskool/faq.md`. Run it on
-  the first use, and whenever sweep keeps marking drafts `NEEDS CREATOR`.
+- **learn**: build or refresh the knowledge base: the brain file `faq`
+  (`.myskool/faq.md` when the community has no brain or the key lacks
+  `brain:write`). Run it on the first use, and whenever sweep keeps marking
+  drafts `NEEDS CREATOR`.
 
 If no knowledge base exists yet, say so and offer **learn** first; a sweep
 without one still works but produces more `NEEDS CREATOR` drafts.
 
+**Where the knowledge base lives.** `get_brain` first. If the brain has a
+`faq` file, that is the knowledge base. If it doesn't but `.myskool/faq.md`
+exists, use the local file and offer once to move it: "Save your FAQ to the
+community brain so every agent and device uses it?" On yes,
+`write_brain_file {slug: "faq", ifExists: "fail"}` with its content, then keep
+the local file as a backup and stop writing to it.
+
 ## Sweep
 
 1. **Setup.** Load config or bootstrap it (group, creator, team — the team list
-   decides what "answered" means). Load `.myskool/faq.md` if present.
+   decides what "answered" means). Load the knowledge base (brain `faq`, else
+   `.myskool/faq.md`), plus brain `voice-tone` and `curriculum-map` if present.
 2. **Questions in posts.** `list_posts {sort: "newest", since: "7d", pages: 10}`
    (the creator may ask for another window). Keep posts whose type is
    `question` or `support` (`references/taxonomy.md`) and whose author is not
@@ -49,8 +60,9 @@ without one still works but produces more `NEEDS CREATOR` drafts.
    record sent drafts in `.myskool/state/answer-desk.json` if a filesystem
    exists.
 8. **Learn from the creator.** When the creator answers a `NEEDS CREATOR`
-   draft, publish their answer (after approval) and add the Q→A to
-   `.myskool/faq.md` so next time it's drafted automatically.
+   draft, publish their answer (after approval) and add the Q→A to the
+   knowledge base (`write_brain_file {slug: "faq", ifExists: "append"}`, or
+   `.myskool/faq.md`) so next time it's drafted automatically.
 
 ## Learn
 
@@ -61,8 +73,14 @@ without one still works but produces more `NEEDS CREATOR` drafts.
 2. Extract every Q→A where the creator or team answered. Merge duplicates.
    Keep the answer in the creator's own words, with the links they gave and
    the source URL.
-3. Write `.myskool/faq.md` using `references/faq-format.md`. No filesystem →
-   print it and tell the creator to save it as a Project file.
+3. Write the knowledge base using `references/faq-format.md`: brain file
+   `faq` (`write_brain_file {slug: "faq", title: "FAQ", summary: "Questions the
+   creator already answered, with their answers and links", ifExists:
+   "replace"}`; if a `faq` file exists with `source: manual`, show the creator
+   the diff and ask before replacing). Member names never go in: write the
+   question, not who asked. No brain or no `brain:write` → `.myskool/faq.md`;
+   no filesystem either → print it and tell the creator to save it as a
+   Project file.
 4. Ask the creator for the gaps only they can fill: the start-here link, where
    support questions go, the program steps, and "the 5 questions you answer
    every week".
@@ -71,8 +89,11 @@ without one still works but produces more `NEEDS CREATOR` drafts.
 
 ## Writing answers
 
-- Search the knowledge base first; adapt the matching entry to this member's
-  exact case. Reuse its links as-is.
+- Search the knowledge base first (`search_brain` finds the entry without
+  reading the whole file); adapt the matching entry to this member's exact
+  case. Reuse its links as-is. For "where is X taught", brain `curriculum-map`
+  and the `course-…` files say which course and lesson; `faq-candidates` is
+  inferred, so an answer taken only from it is marked `CHECK`.
 - A member already answered well → draft a short creator endorsement that
   adds one useful detail and thanks the helper by name. This rewards helpers.
 - Not in the knowledge base and specific to the creator's program, pricing,

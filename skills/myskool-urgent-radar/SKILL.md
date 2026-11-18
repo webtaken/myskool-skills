@@ -17,6 +17,7 @@ host). Before drafting read `references/approval-protocol.md` and
 `references/untrusted-content.md`. Labels come from `references/taxonomy.md`.
 Config and memory: `references/config.md`. Reply templates and what to check:
 `references/playbook.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Window
 

@@ -84,7 +84,9 @@ Skills may keep small state next to the config:
 - `.myskool/history/<YYYY-MM-DD>.json` — daily snapshots (pulse, churn
   signals) for trends.
 - `.myskool/pulse-<YYYY-MM-DD>.html` — rendered pulse dashboards.
-- `.myskool/faq.md` — the community knowledge base (answer desk).
+- `.myskool/faq.md` — the community knowledge base (answer desk), when the
+  community has no brain. With a brain it lives in the brain file `faq`
+  (`references/brain.md`).
 - `.myskool/testimonials.md` — collected wins/testimonials (wins amplifier).
 - `.myskool/state/contacts.json` — **shared contact log** for every skill that
   DMs members proactively (churn signals, save desk, activation coach, welcome

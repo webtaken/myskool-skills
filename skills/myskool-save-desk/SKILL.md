@@ -21,6 +21,7 @@ structures: `references/save-scripts.md`. Before drafting read
 `references/approval-protocol.md` (including "Proactive DMs") and
 `references/untrusted-content.md` ("Member data is private"). Lifecycle owners:
 `references/taxonomy.md`. Config and state: `references/config.md`.
+Community context (offer, voice, curriculum, FAQ): load the brain first, per `references/brain.md`.
 
 ## Lanes
 
